@@ -1,0 +1,206 @@
+<div ng-init="getStats()">
+
+    <div class="pull-right">
+        <cc-auto-refresh-fn
+                refresh-fn="getStats()"
+                refresh-interval="options.AUTO_PAGE_REFRESH_INTERVAL"
+        >
+        </cc-auto-refresh-fn>
+
+    </div>
+    <div class="col-md-12">
+        <div class="row text-center">
+
+            <div class="col-md-2">
+                <div class="panel panel-default ">
+                    <div class="panel-heading"><strong>Blocks</strong></div>
+                    <div class="panel-body"><label id="peers"> {{stats.numberOfBlocks}} </label></div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="panel panel-default ">
+                    <div class="panel-heading"><strong>Transactions</strong></div>
+                    <div class="panel-body"><label id="total-transactions">{{stats.numberOfTransactions}}</label></div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="panel panel-default ">
+                    <div class="panel-heading"><strong>Accounts</strong></div>
+                    <div class="panel-body"><label id="accounts">{{stats.numberOfAccounts}}</label></div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="panel panel-default ">
+                    <div class="panel-heading"><strong>Assets</strong></div>
+                    <div class="panel-body"><label id="assets">{{stats.numberOfAssets}}</label></div>
+
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="panel panel-default ">
+                    <div class="panel-heading"><strong>Currencies</strong></div>
+                    <div class="panel-body"><label id="currencies">{{stats.numberOfCurrencies}}</label></div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><strong>Aliases</strong></div>
+                    <div class="panel-body"><label id="aliases">{{stats.numberOfAliases}}</label></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="row text-center">
+
+            <div class="col-md-2">
+                <div class="panel panel-default ">
+                    <div class="panel-heading"><strong>Polls</strong></div>
+                    <div class="panel-body"><label id="polls">{{stats.numberOfPolls}}</label></div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="panel panel-default ">
+                    <div class="panel-heading"><strong>Votes</strong></div>
+                    <div class="panel-body"><label id="votes">{{stats.numberOfVotes}}</label></div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="panel panel-default ">
+                    <div class="panel-heading"><strong>Asset Transfers</strong></div>
+                    <div class="panel-body"><label id="transfers">{{stats.numberOfTransfers}}</label></div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="panel panel-default ">
+                    <div class="panel-heading"><strong>Currency Transfers</strong></div>
+
+                    <div class="panel-body"><label id="currency-transfers">{{stats.numberOfCurrencyTransfers}}</label></div>
+
+                </div>
+            </div>
+
+          <div class="col-md-2">
+            <div class="panel panel-default ">
+              <div class="panel-heading"><strong>Exchanges</strong></div>
+              <div class="panel-body"><label id="exchanges">{{stats.numberOfExchanges}}</label></div>
+            </div>
+          </div>
+
+          <div class="col-md-2">
+              <div class="panel panel-default ">
+                  <div class="panel-heading"><strong>Exchange Requests</strong></div>
+                  <div class="panel-body"><label id="exchange-requests">{{stats.numberOfExchangeRequests}}</label></div>
+              </div>
+          </div>
+
+
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="row text-center">
+
+            <div class="col-md-2">
+                <div class="panel panel-default ">
+                    <div class="panel-heading"><strong>Trades</strong></div>
+                    <div class="panel-body"><label id="trades">{{stats.numberOfTrades}}</label></div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="panel panel-default ">
+					             <div class="panel-heading"><strong>Offers</strong></div>
+                    <div class="panel-body"><label id="offers">{{stats.numberOfOffers}}</label></div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="panel panel-default ">
+                    <div class="panel-heading"><strong>Total Orders</strong></div>
+                    <div class="panel-body"><label id="total-orders">{{stats.numberOfOrders}}</label></div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="panel panel-default ">
+                    <div class="panel-heading"><strong>Bid Orders</strong></div>
+                    <div class="panel-body"><label id="bid-orders">{{stats.numberOfBidOrders}}</label></div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="panel panel-default ">
+                    <div class="panel-heading"><strong>Asks Orders</strong></div>
+                    <div class="panel-body"><label id="askOrders">{{stats.numberOfAskOrders }}</label></div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="panel panel-default ">
+                    <div class="panel-heading"><strong>Bids</strong></div>
+                    <div class="panel-body"><label id="bids">{{stats.numberOfBids}}</label></div>
+                </div>
+            </div>
+
+
+      </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="row text-center">
+
+          <div class="col-md-2">
+              <div class="panel panel-default ">
+                  <div class="panel-heading"><strong>Asks</strong></div>
+                  <div class="panel-body"><label id="asks">{{stats.numberOfAsks}}</label></div>
+              </div>
+          </div>
+
+          <div class="col-md-2">
+              <div class="panel panel-default ">
+                  <div class="panel-heading"><strong>Escrows</strong></div>
+                  <div class="panel-body"><label id="asks"> 0 </label></div>
+              </div>
+          </div>
+
+          <div class="col-md-2">
+              <div class="panel panel-default ">
+                  <div class="panel-heading"><strong>Subscriptions</strong></div>
+                  <div class="panel-body"><label id="asks"> 0 </label></div>
+              </div>
+          </div>
+
+          <div class="col-md-2">
+              <div class="panel panel-default ">
+                  <div class="panel-heading"><strong>Crowdfundings</strong></div>
+                  <div class="panel-body"><label id="asks"> 0 </label></div>
+              </div>
+          </div>
+
+          <div class="col-md-2">
+              <div class="panel panel-default ">
+                  <div class="panel-heading"><strong>Smart Contracts</strong></div>
+                  <div class="panel-body"><label id="asks"> 0 </label></div>
+              </div>
+          </div>
+
+          <div class="col-md-2">
+              <div class="panel panel-default ">
+                  <div class="panel-heading"><strong>Placeholder</strong></div>
+                  <div class="panel-body"><label id="asks"> 0 </label></div>
+              </div>
+          </div>
+
+        </div>
+    </div>
+
+
+</div>

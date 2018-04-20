@@ -1,0 +1,8 @@
+Blockexplorer v0.4.1b
+---------------------
+
+Added supply circulations.
+Added distribuion page
+Added statistics page
+Added net indicator in navbar
+Some minor adjustments
