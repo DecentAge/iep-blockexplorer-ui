@@ -1,7 +1,7 @@
 {
   "name": "block",
   "version": "1.1.0",
-  "description": "Block Explorer",
+  "description": "iep-blockexplorer-ui",
   "main": "app.js",
   "scripts": {
     "test": "grunt test"

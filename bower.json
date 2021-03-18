@@ -1,6 +1,6 @@
 {
   "name": "block",
-  "description": "Block Explorer",
+  "description": "iep-blockexplorer-ui",
   "main": "app.js",
   "authors": [
     "Team"
