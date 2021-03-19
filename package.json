@@ -4,6 +4,8 @@
   "description": "iep-blockexplorer-ui",
   "main": "app.js",
   "scripts": {
+    "build": "bower install --allow-root && gulp build",
+    "start": "gulp server",
     "test": "grunt test"
   },
   "author": "IEPTeam",
