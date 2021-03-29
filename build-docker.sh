@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build -t iep-blockexplorer-ui .
+docker build -t decentage/iep-blockexplorer-ui:latest  .
