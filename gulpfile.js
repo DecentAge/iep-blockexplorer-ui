@@ -77,9 +77,9 @@ gulp.task('server:dist', function () {
 });
 
 gulp.task('watch', function () {
-    gulp.watch([config.styles], gulp.series('watch:styles'));
-    gulp.watch([config.scripts], gulp.series('watch:scripts'));
-    gulp.watch([config.html], gulp.series('watch:html'));
+    gulp.watch(config.styles, gulp.series('watch:styles'));
+    gulp.watch(config.scripts, gulp.series('watch:scripts'));
+    gulp.watch(config.html, gulp.series('watch:html'));
 });
 
 gulp.task('server', gulp.parallel('watch:scripts', 'watch:styles', 'watch:html', 'browser-sync', 'watch'));
@@ -92,7 +92,7 @@ gulp.task('clean:dist', function () {
 
 gulp.task('index:build', function () {
     return gulp.src('app/index.html')
-        //.pipe(plugins.useref())
+        .pipe(plugins.useref())
         .pipe(plugins.sourcemaps.init())
         .pipe(plugins.if('*.js', plugins.uglify()))
         .pipe(plugins.if('*.js', plugins.sourcemaps.write('.')))
