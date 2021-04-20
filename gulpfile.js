@@ -92,7 +92,7 @@ gulp.task('clean:dist', function () {
 
 gulp.task('index:build', function () {
     return gulp.src('app/index.html')
-        .pipe(plugins.useref())
+        //.pipe(plugins.useref())
         .pipe(plugins.sourcemaps.init())
         .pipe(plugins.if('*.js', plugins.uglify()))
         .pipe(plugins.if('*.js', plugins.sourcemaps.write('.')))
