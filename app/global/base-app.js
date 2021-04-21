@@ -19,22 +19,22 @@ angular.module('baseBlockExplorer', ['ngSanitize', 'angularMoment', 'cc.autorefr
 
 angular.module('baseBlockExplorer').constant('baseConfig', {
 
-    'apiUrl': getEnvConfig('API_URL') || 'http://185.35.139.101:23457',
-    'genesisAccount' : getEnvConfig('GENESIS_ACCOUNT') || 'XIN-NTLK-Z5GA-WNAV-GW378', // Main
+    'apiUrl': window.getEnvConfig('BLOCK_EXPLORER_API_URL') || 'http://185.35.139.101:23457',
+    'genesisAccount' : window.getEnvConfig('GENESIS_ACCOUNT') || 'XIN-NTLK-Z5GA-WNAV-GW378', // Main
 
     // 'apiUrl': 'http://185.35.138.140:9876',   // Test
     // 'genesisAccount' : 'XIN-7NPU-L6RP-4JSM-A8YGJ',
 
-    'baseEndPoint': getEnvConfig('BASE_ENDPOINT') || 'api',
-    'TOKEN_QUANTS': getEnvConfig('TOKEN_QUANTS') || 100000000,
-    'EPOCH': getEnvConfig('EPOCH') ||  1484046000,
-    'BASE_TARGET' : getEnvConfig('BASE_TARGET') || 17080318,
-    'initialSupply' : getEnvConfig('INITIAL_SUPPLY') || 9000000000
+    'baseEndPoint': 'api',
+    'TOKEN_QUANTS': window.getEnvConfig('TOKEN_QUANTS') || 100000000,
+    'EPOCH': window.getEnvConfig('EPOCH') ||  1484046000,
+    'BASE_TARGET' : window.getEnvConfig('BASE_TARGET') || 17080318,
+    'initialSupply' : window.getEnvConfig('INITIAL_SUPPLY') || 9000000000
 });
 
 angular.module('baseBlockExplorer').constant('BASE_OPTIONS', {
-    'AUTO_PAGE_REFRESH_INTERVAL': getEnvConfig('AUTO_PAGE_REFRESH_INTERVAL') || 60000,
-    'VERSION': getEnvConfig('VERSION') || '0.5.1b'
+    'AUTO_PAGE_REFRESH_INTERVAL': window.getEnvConfig('AUTO_PAGE_REFRESH_INTERVAL') || 60000,
+    'VERSION': window.getEnvConfig('VERSION') || '0.5.1b'
 });
 
 angular.module('baseBlockExplorer').filter('timestamp', ['$sce', 'moment', 'baseConfig', function ($sce, moment, baseConfig) {
