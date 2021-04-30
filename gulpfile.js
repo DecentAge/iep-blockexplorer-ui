@@ -1,3 +1,5 @@
+const { execSync } = require('child_process');
+
 var gulp = require('gulp'),
     plugins = require('gulp-load-plugins')({
         pattern: '*',
@@ -53,6 +55,8 @@ gulp.task('watch:html', function () {
 });
 
 gulp.task('browser-sync', function () {
+	execSync("envsub app/env.config.js.template app/env.config.js");
+	
     plugins.browserSync({
         server: {
             baseDir: config.app,
@@ -60,9 +64,9 @@ gulp.task('browser-sync', function () {
                 '/bower_components': 'bower_components'
             }
         },
-        port: config.serverPort,
+        port: process.env.PORT,
         browser: config.browser,
-
+        startPath: process.env.PUBLIC_PATH+'/#!/blocks'
     });
 });
 
@@ -77,9 +81,9 @@ gulp.task('server:dist', function () {
 });
 
 gulp.task('watch', function () {
-    gulp.watch([config.styles], gulp.series('watch:styles'));
-    gulp.watch([config.scripts], gulp.series('watch:scripts'));
-    gulp.watch([config.html], gulp.series('watch:html'));
+    gulp.watch(config.styles, gulp.series('watch:styles'));
+    gulp.watch(config.scripts, gulp.series('watch:scripts'));
+    gulp.watch(config.html, gulp.series('watch:html'));
 });
 
 gulp.task('server', gulp.parallel('watch:scripts', 'watch:styles', 'watch:html', 'browser-sync', 'watch'));
@@ -122,5 +126,11 @@ gulp.task('copy:images', function() {
         .pipe(gulp.dest(config.dist + '/images'));
 });
 
+gulp.task('copy:config', function() {
+    return gulp.src(config.app + '/env.config.js')
 
-gulp.task('build', gulp.series('clean:dist', gulp.series('copy:html','copy:images','copy:fonts', 'index:build')));
+        .pipe(gulp.dest(config.dist));
+});
+
+
+gulp.task('build', gulp.series('clean:dist', gulp.series('copy:config','copy:html','copy:images','copy:fonts', 'index:build')));
