@@ -8,6 +8,7 @@ RUN npm install
 COPY ["bower.json", "./"]
 RUN npm run bower install
 COPY /app /app/app
+RUN npm run-script update-version --release_version=$(cat release-version.txt)
 RUN npm run build
 
 # production environment
