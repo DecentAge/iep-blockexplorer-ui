@@ -8,4 +8,5 @@ docker build -t decentage/iep-blockexplorer-ui:${RELEASE_VERSION}  .
 
 echo "Creating fake zip file to avoid artifact upload issue"
 mkdir -p ./build
-touch ./build/iep-blockexplorer-ui.zip
+docker cp ${CONTAINER_ID}:/build/iep-blockexplorer-ui.zip ./build
+docker rm ${CONTAINER_ID}
