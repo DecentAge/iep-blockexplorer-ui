@@ -1,4 +1,4 @@
-** Release 0.3.0 **
+# Release 0.3.1
 - moved base app folder to root
 - added jshont rc in order to be able to compile the project
 - Dockerized the project
