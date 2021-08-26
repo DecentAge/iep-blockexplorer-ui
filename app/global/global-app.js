@@ -27,7 +27,9 @@ angular.module('blockExplorer')
             template: '<div ui-view></div>',
         });
 
-        $urlRouterProvider.otherwise('/blocks');
+        $urlRouterProvider.otherwise('/blocks')
+
+        document.title = "Infinity Block Explorer | " + window.getEnvConfig("NETWORK_ENVIRONMENT");
     }]);
 
 angular.module('blockExplorer').run(['$rootScope', 'BASE_OPTIONS', function ($rootScope, BASE_OPTIONS) {
