@@ -77,7 +77,7 @@ angular.module('blocks').controller('BlocksCtrl',
                     }),
                 DTColumnBuilder.newColumn('timestamp').withTitle('Date').notSortable()
                     .renderWith(function (data, type, row, meta) {
-                            return formatDate(new Date(timestampFilter(data)), true);
+                            return $scope.formatDate(new Date(timestampFilter(data)), true);
                         }
                     ),
 
@@ -130,21 +130,6 @@ angular.module('blocks').controller('BlocksCtrl',
                     return '<span class="label label-default">' + target.toFixed(2) + ' %' + '</span>';
                 }
 
-            }
-
-            function formatDate(d, withTime) {
-                if (!d || typeof d === "undefined") {
-                    return "n/a";
-                }
-                if (typeof withTime === "undefined") {
-                    withTime = false;
-                }
-
-                var browserLocale = navigator.language || navigator.userLanguage || "en-US";
-
-                var date = new Date(d);
-
-                return date.toLocaleDateString(browserLocale) + (withTime ? ' <strong>' + date.toLocaleTimeString(browserLocale) + '</strong>' : "");
             }
 
             function getBlocksTxs(value) {

@@ -245,7 +245,7 @@ angular.module('assets').controller('AssetTradeCtrl',
 
                 DTColumnBuilder.newColumn('timestamp').withTitle('Date').notSortable()
                     .renderWith(function (data, type, row, meta) {
-                        return timestampFilter(data);
+                        return $scope.formatDate(timestampFilter(data), true);
                     }),
 
                 DTColumnBuilder.newColumn('priceTQT').withTitle('Price').notSortable()

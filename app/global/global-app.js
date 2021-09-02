@@ -34,4 +34,19 @@ angular.module('blockExplorer')
 
 angular.module('blockExplorer').run(['$rootScope', 'BASE_OPTIONS', function ($rootScope, BASE_OPTIONS) {
     $rootScope.options = BASE_OPTIONS;
+
+    $rootScope.formatDate = function(d, withTime) {
+        if (!d || typeof d === "undefined") {
+            return "n/a";
+        }
+        if (typeof withTime === "undefined") {
+            withTime = false;
+        }
+
+        var browserLocale = navigator.language || navigator.userLanguage || "en-US";
+
+        var date = new Date(d);
+
+        return date.toLocaleDateString(browserLocale) + (withTime ? ' <strong>' + date.toLocaleTimeString(browserLocale) + '</strong>' : "");
+    }
 }]);

@@ -66,7 +66,7 @@ angular.module('transactions').controller('TransactionsCtrl',
                       }),
                     DTColumnBuilder.newColumn('timestamp').withTitle('Date').notSortable()
                         .renderWith(function (data, type, row, meta) {
-                                return timestampFilter(data);
+                                return $scope.formatDate(timestampFilter(data), true);
                           }),
                     DTColumnBuilder.newColumn('amountTQT').withTitle('Amount').notSortable()
                         .renderWith(function (data, type, row, meta) {
