@@ -1,8 +1,9 @@
 # Release 0.3.2
 - added network to website title (mainnet/testnet)
-- fixed node target value display in block list
+- fixed displayed target value in block list
 - added difficulty to block list
 - disabled panels to avoid toggling of boxes
+- fixed link to peerexplorer
 
 # Release 0.3.1
 - moved base app folder to root
