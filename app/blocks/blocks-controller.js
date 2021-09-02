@@ -81,9 +81,9 @@ angular.module('blocks').controller('BlocksCtrl',
                         }
                     ),
 
-                DTColumnBuilder.newColumn('baseTarget').withTitle('Target').notSortable()
+                DTColumnBuilder.newColumn('baseTarget').withTitle('Target / Difficulty').notSortable()
                     .renderWith(function (data, type, row, meta) {
-                            return baseTarget(data);
+                            return row.baseTarget + " / " + row.cumulativeDifficulty;
                         }
                     ),
 
