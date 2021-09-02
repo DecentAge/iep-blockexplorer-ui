@@ -18,6 +18,10 @@ This application is used as an overview and details for block, transactions etc.
 - General Blockchain Statistics
 
 ## Getting Started
+### Configuration
+
+You can configure several values for the app. The config file is located in `/app/env.config.js`.
+
 ### Prerequisites
 
 You need to have following tools installed:
