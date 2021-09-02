@@ -1,3 +1,9 @@
+# Release 0.3.2
+- added network to website title (mainnet/testnet)
+- fixed node target value display in block list
+- added difficulty to block list
+- disabled panels to avoid toggling of boxes
+
 # Release 0.3.1
 - moved base app folder to root
 - added jshont rc in order to be able to compile the project
