@@ -4,6 +4,9 @@
 - added difficulty to block list
 - disabled panels to avoid toggling of boxes
 - fixed link to peerexplorer
+- adjusted font color for better readability
+- formatted dates with locale detection
+
 
 # Release 0.3.1
 - moved base app folder to root
