@@ -157,17 +157,17 @@ table.dataTable thead th {
 .modal-titleText{text-transform:uppercase; font-weight:500; letter-spacing:0.015cm;}
 
 table.dataTable tbody td{
-    color:#9d9faf;
+    color:#666;
        padding:12px 0;
     font-weight:600;
     font-family: 'Montserrat', sans-serif;
     background-color: #fff;
     border-color:#eff5f8;
     a{
-        color:#9d9faf;
+        color:#666;
     }
     .label-default{background:transparent;
-        color:#9d9faf; font-size:14px; font-weight:600; }
+        color:#666; font-size:14px; font-weight:600; }
      .btn{ font-size:14px; font-weight:600;}
 }
 /* table */
@@ -311,10 +311,10 @@ table.dataTable, table.dataTable.no-footer{
     .panel-body table thead tr th{font-size:12px; font-weight: 800; border-color: #ececed !important;  }
     .panel-body table tbody tr td, .panel-body table thead tr th{padding:16px; border-color: #eff5f8; text-transform: uppercase;}
     .panel-collapse{padding: 32px; background-color: #fff; border-radius: 6px !important;}
-    .panel-body table tbody tr td, .panel-body table tbody tr td a.pointer{ font-size:14px; background-color:#fff ; font-family:Montserrat; font-weight:600; color:#9d9faf; }
+    .panel-body table tbody tr td, .panel-body table tbody tr td a.pointer{ font-size:14px; background-color:#fff ; font-family:Montserrat; font-weight:400; color:#666; }
     .panel-body table tbody tr td span {display:inline-block; background-color:transparent; }
-    .panel-body table tbody tr td span.label {font-size:14px; font-weight: 600; font-family: Montserrat; color:#9d9faf; display:inline-block; background-color:transparent; }
-    .panel-body table tbody tr td a { font-weight:600; color:#9d9faf; background-color: transparent; font-family:Montserrat; font-weight:600;}
+    .panel-body table tbody tr td span.label {font-size:14px; font-weight: 600; font-family: Montserrat; color:#666; display:inline-block; background-color:transparent; }
+    .panel-body table tbody tr td a { font-weight:600; color:#666; background-color: transparent; font-family:Montserrat; font-weight:600;}
 
     span{
         display: flex;

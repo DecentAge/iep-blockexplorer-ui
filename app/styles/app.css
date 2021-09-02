@@ -350,17 +350,17 @@ table.dataTable thead th {
   letter-spacing: 0.015cm; }
 
 table.dataTable tbody td {
-  color: #9d9faf;
+  color: #666;
   padding: 12px 0;
   font-weight: 600;
   font-family: 'Montserrat', sans-serif;
   background-color: #fff;
   border-color: #eff5f8; }
   table.dataTable tbody td a {
-    color: #9d9faf; }
+    color: #666; }
   table.dataTable tbody td .label-default {
     background: transparent;
-    color: #9d9faf;
+    color: #666;
     font-size: 14px;
     font-weight: 600; }
   table.dataTable tbody td .btn {
@@ -519,8 +519,8 @@ table.dataTable, table.dataTable.no-footer {
   font-size: 14px;
   background-color: #fff;
   font-family: Montserrat;
-  font-weight: 600;
-  color: #9d9faf; }
+  font-weight: 400;
+  color: #666; }
 
 .active-node-header .panel-body table tbody tr td span {
   display: inline-block;
@@ -530,13 +530,13 @@ table.dataTable, table.dataTable.no-footer {
   font-size: 14px;
   font-weight: 600;
   font-family: Montserrat;
-  color: #9d9faf;
+  color: #666;
   display: inline-block;
   background-color: transparent; }
 
 .active-node-header .panel-body table tbody tr td a {
   font-weight: 600;
-  color: #9d9faf;
+  color: #666;
   background-color: transparent;
   font-family: Montserrat;
   font-weight: 600; }

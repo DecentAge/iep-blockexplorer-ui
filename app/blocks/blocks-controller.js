@@ -75,9 +75,9 @@ angular.module('blocks').controller('BlocksCtrl',
                     .renderWith(function (data, type, row, meta) {
                         return searchTermFilter(data);
                     }),
-                DTColumnBuilder.newColumn('timestamp').withTitle('Timestamp').notSortable()
+                DTColumnBuilder.newColumn('timestamp').withTitle('Date').notSortable()
                     .renderWith(function (data, type, row, meta) {
-                            return timestampFilter(data);
+                            return formatDate(new Date(timestampFilter(data)), true);
                         }
                     ),
 
@@ -130,6 +130,21 @@ angular.module('blocks').controller('BlocksCtrl',
                     return '<span class="label label-default">' + target.toFixed(2) + ' %' + '</span>';
                 }
 
+            }
+
+            function formatDate(d, withTime) {
+                if (!d || typeof d === "undefined") {
+                    return "n/a";
+                }
+                if (typeof withTime === "undefined") {
+                    withTime = false;
+                }
+
+                var browserLocale = navigator.language || navigator.userLanguage || "en-US";
+
+                var date = new Date(d);
+
+                return date.toLocaleDateString(browserLocale) + (withTime ? ' <strong>' + date.toLocaleTimeString(browserLocale) + '</strong>' : "");
             }
 
             function getBlocksTxs(value) {
