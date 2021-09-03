@@ -34,7 +34,7 @@ angular.module('baseBlockExplorer').constant('baseConfig', {
 
 angular.module('baseBlockExplorer').constant('BASE_OPTIONS', {
     'AUTO_PAGE_REFRESH_INTERVAL': window.getEnvConfig('AUTO_PAGE_REFRESH_INTERVAL') || 60000,
-    'VERSION': window.getEnvConfig('RELEASE_VERSION') || '0.5.1b',
+    'VERSION': window.getEnvConfig('RELEASE_VERSION') || '0.3.2',
     'NETWORK_ENVIRONMENT': window.getEnvConfig('NETWORK_ENVIRONMENT'),
 });
 
