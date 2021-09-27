@@ -18,7 +18,6 @@ angular.module('distributions',
     ['restangular', 'datatables', 'datatables.bootstrap', 'ui.bootstrap', 'ui.router']);
 
 angular.module('distributions').constant('distributionsConfig', {
-    'distributionsUrl': 'http://185.35.137.7:23457',
     'distributionsEndPoint': 'api'
 });
 

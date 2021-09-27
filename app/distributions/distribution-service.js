@@ -16,7 +16,7 @@
 
 
 angular.module('distributions').service('DistributionService',
-    ['Restangular', 'distributionsConfig', function (Restangular, distributionsConfig) {
+    ['Restangular', 'distributionsConfig', 'baseConfig', function (Restangular, distributionsConfig, baseConfig) {
 
         this.getDistributions =
             function (firstIndex, lastIndex, includeDistributions, distributionStart, distributionEnd,
@@ -32,7 +32,7 @@ angular.module('distributions').service('DistributionService',
                     'interval': interval
                 };
 
-                Restangular.setBaseUrl( distributionsConfig.distributionsUrl);
+                Restangular.setBaseUrl( baseConfig.apiUrl);
                 return Restangular.all(distributionsConfig.distributionsEndPoint).customGET('', params);
 
             };
