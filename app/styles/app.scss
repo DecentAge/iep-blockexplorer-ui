@@ -46,3 +46,8 @@
     padding: 14px 7px !important;
   }
 }
+
+a.accordion-toggle:focus, a.accordion-toggle:focus * {
+  outline: none !important;
+  text-decoration: none;
+}
