@@ -26,7 +26,7 @@ angular.module('distributions').controller('DistributionsCtrl',
                                               .withOption('responsive', true)
                                               .withOption('ordering', false)
                                               .withOption('info', false)
-                                              .withOption('serverSide', false)
+                                              .withOption('serverSide', true)
                                               .withDataProp('balances')
                                               .withOption('paging', true)
                                               .withOption('processing', true)
@@ -36,11 +36,10 @@ angular.module('distributions').controller('DistributionsCtrl',
                                                         $compile(nRow)($scope);
                                                     })
                                                 .withOption('ajax', function (data, callback, settings) {
-                                                    var endIndex = data.start + data.length - 1;
-                                                    DistributionService.getDistributions(data.start, endIndex).then(function (response) {
+                                                    DistributionService.getAccountBalances(data.start, 10).then(function (response) {
                                                         callback({
-                                                            'iTotalRecords': 1000,
-                                                            'iTotalDisplayRecords': 1000,
+                                                            'iTotalRecords': response.total,
+                                                            'iTotalDisplayRecords': response.total,
                                                             'balances': response.balances
                                                         });
                                                     });
@@ -84,9 +83,7 @@ angular.module('distributions').controller('DistributionsCtrl',
                                                           $compile(nRow)($scope);
                                                       })
                                                 .withOption('ajax', function (data, callback, settings) {
-                                                    var endIndex = data.start + data.length - 1;
-                                                    DistributionService.getDistributions(data.start,
-                                                        endIndex, true, 1000, 9 * 1000000000 * 100000000, 10)
+                                                    DistributionService.getDistributions( 100000000000, 9 * 1000000000 * 100000000, 10)
                                                                        .then(function (response) {
                                                                            callback({
                                                                                'iTotalRecords': response.distributions.length,
@@ -98,15 +95,15 @@ angular.module('distributions').controller('DistributionsCtrl',
                                                   .withDisplayLength(10).withBootstrap();
 
             $scope.dtDistributionColumns = [
-                DTColumnBuilder.newColumn('distributionStart').withTitle('From')
+                DTColumnBuilder.newColumn('from').withTitle('From')
                                .renderWith(function (data, type, row, meta) {
                                    return quantToAmountFilter(data);
                                }),
-                DTColumnBuilder.newColumn('distributionEnd').withTitle('To')
+                DTColumnBuilder.newColumn('to').withTitle('To')
                                .renderWith(function (data, type, row, meta) {
                                    return (quantToAmountFilter(data));
                                }),
-                DTColumnBuilder.newColumn('distribution').withTitle('#')
+                DTColumnBuilder.newColumn('accountsAmount').withTitle('#')
                                .renderWith(function (data, type, row, meta) {
                                    return (data);
                                }),
@@ -120,6 +117,5 @@ angular.module('distributions').controller('DistributionsCtrl',
                     $scope.dtDistributionInstance._renderer.rerender();
                 }
             };
-
         }
     ]);

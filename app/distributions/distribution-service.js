@@ -18,18 +18,28 @@
 angular.module('distributions').service('DistributionService',
     ['Restangular', 'distributionsConfig', 'baseConfig', function (Restangular, distributionsConfig, baseConfig) {
 
-        this.getDistributions =
-            function (firstIndex, lastIndex, includeDistributions, distributionStart, distributionEnd,
-                      interval) {
+        this.getAccountBalances =
+            function (index, pageSize) {
 
                 var params = {
                     'requestType': 'getAccountBalances',
-                    'firstIndex': firstIndex,
-                    'lastIndex': lastIndex,
-                    'includeDistribution': includeDistributions,
-                    'distributionStart': distributionStart,
-                    'distributionEnd': distributionEnd,
-                    'interval': interval
+                    'index': index,
+                    'size': pageSize,
+                };
+
+                Restangular.setBaseUrl( baseConfig.apiUrl);
+                return Restangular.all(distributionsConfig.distributionsEndPoint).customGET('', params);
+
+            };
+
+        this.getDistributions =
+            function (minAccountBalance, maxAccountBalance, slices) {
+
+                var params = {
+                    'requestType': 'getDistributions',
+                    'minAccountBalance': minAccountBalance,
+                    'maxAccountBalance': maxAccountBalance,
+                    'slices': slices
                 };
 
                 Restangular.setBaseUrl( baseConfig.apiUrl);
