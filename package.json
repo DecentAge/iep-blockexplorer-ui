@@ -1,6 +1,6 @@
 {
-  "name": "block",
-  "version": "0.3.2",
+  "name": "iep-blockexplorer-ui",
+  "version": "0.3.3",
   "description": "iep-blockexplorer-ui",
   "main": "app.js",
   "scripts": {
