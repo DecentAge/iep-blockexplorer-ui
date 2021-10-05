@@ -1,7 +1,8 @@
 # build environment
-FROM node:10 AS builder
+FROM node:12-alpine AS builder
 WORKDIR /app
-RUN apt-get update && apt-get install -y zip
+RUN apk add --no-cache git
+RUN apk add --no-cache zip
 RUN npm install -g gulp@4.0.2
 RUN npm link gulp --force
 COPY ["package*.json", "gulpfile.js", ".jshintrc", "default.conf.template", "30-nginx-iep-startup-script.sh", "./"]
@@ -15,7 +16,7 @@ RUN mkdir -p /app/build
 RUN zip -r /app/build/iep-blockexplorer-ui.zip ./dist
 
 # production environment
-FROM nginx:1.18
+FROM nginx:1.18-alpine
 ENV NGINX_PATH=/
 COPY --from=builder /app/dist /usr/share/nginx/html/
 COPY --from=builder /app/build /build
