@@ -16,7 +16,7 @@ RUN mkdir -p /app/build
 RUN zip -r /app/build/iep-blockexplorer-ui.zip ./dist
 
 # production environment
-FROM nginx:1.20-alpine
+FROM nginx:1.20
 ENV NGINX_PATH=/
 COPY --from=builder /app/dist /usr/share/nginx/html/
 COPY --from=builder /app/build /build
