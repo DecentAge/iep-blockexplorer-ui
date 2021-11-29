@@ -23,6 +23,8 @@ COPY --from=builder /app/build /build
 COPY --from=builder /app/default.conf.template /etc/nginx/templates/default.conf.template
 COPY --from=builder /app/app/env.config.js.template /etc/nginx/templates/env.config.js.template
 COPY --from=builder /app/30-nginx-iep-startup-script.sh /docker-entrypoint.d/30-nginx-iep-startup-script.sh
+RUN ls -alt /docker-entrypoint.d
+
 RUN chmod 777 /docker-entrypoint.d/30-nginx-iep-startup-script.sh
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
