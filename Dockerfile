@@ -27,4 +27,4 @@ RUN chmod 775 /docker-entrypoint.d/30-nginx-iep-startup-script.sh
 EXPOSE 80
 #CMD ["nginx", "-g", "daemon off;"]
 
-CMD /bin/sh -c", "ls -alt /docker-entrypoint.d && nginx -g 'daemon off'";
+CMD /bin/sh -c "ls -alt /docker-entrypoint.d && nginx -g 'daemon off;'";
