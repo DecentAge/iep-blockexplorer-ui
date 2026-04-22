@@ -1,0 +1,170 @@
+/* App component styles matching Infinity Economics original design */
+
+/* Navigation bar matching original */
+.navbar-default {
+  font: 17px 'Montserrat', sans-serif;
+  background: linear-gradient(to right, #e72d45 0%, #f3931b 100%);
+  min-height: 50px;
+  border: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+
+  .navbar-inner {
+    padding: 15px 0;
+    background: transparent;
+  }
+
+  .navbar-header {
+    display: flex;
+    align-items: center;
+  }
+
+  .navbar-brand {
+    color: white !important;
+    font-weight: 600;
+    padding: 15px;
+
+    img {
+      height: 40px;
+      margin-top: -10px;
+      margin-left: 20px;
+    }
+  }
+
+  .navbar-nav > li {
+    padding: 11px 0 15px 0;
+    border-top: 4px solid transparent;
+
+    &.active {
+      border-top: 4px solid white;
+    }
+
+    > a {
+      color: white !important;
+      font-size: 13px;
+      font-weight: 600;
+      transition: color 0.3s ease;
+
+      &:hover, &:focus {
+        color: rgba(255, 255, 255, 0.8) !important;
+        background-color: transparent;
+      }
+    }
+  }
+
+  .navbar-toggle {
+    background-color: white;
+    border: none;
+
+    .icon-bar {
+      background-color: var(--primary-color);
+    }
+  }
+
+  .navbar-collapse.in {
+    margin-top: 15px;
+  }
+}
+
+/* Header wrapper for flex layout */
+.header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Search and network type section */
+.search-and-type {
+  text-align: center;
+  margin-left: 40px;
+
+  input {
+    min-width: 250px;
+    width: unset !important;
+  }
+
+  .btn-infinity {
+    background-color: transparent;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 13px;
+    min-height: 34px;
+    border: none;
+
+    &:hover {
+      background: #2b2b2b;
+      color: white;
+    }
+
+    &.btn-infinity-enabled {
+      background: var(--primary-color);
+      color: white;
+    }
+  }
+
+  span {
+    position: relative;
+    display: inline-block;
+    padding: 7px 20px;
+    font-family: 'Montserrat';
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 16px;
+    border-radius: 50px !important;
+    min-width: 130px;
+    text-align: center;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    background-clip: padding-box;
+    cursor: pointer;
+    color: white;
+  }
+}
+
+/* Global app container */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Content wrapper to prevent overlap with fixed navbar */
+.content-wrapper {
+  padding-top: 70px;
+  flex: 1;
+}
+
+/* Main content area */
+main {
+  flex: 1;
+  padding-top: 80px;
+}
+
+/* Responsive navigation */
+@media (min-width: 768px) {
+  .form-inline .input-group > .form-control {
+    width: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .navbar-form {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .search-and-type {
+    margin-left: 0;
+    margin-top: 15px;
+  }
+
+  .content-wrapper {
+    padding-top: 80px;
+  }
+
+  main {
+    padding-top: 60px;
+  }
+}
