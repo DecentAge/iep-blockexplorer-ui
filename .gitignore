@@ -8,4 +8,10 @@ yarn-error.log*
 /.pnp
 .pnp.js
 
+# Angular CLI build cache
+/.angular/cache
+
+# Package lock files
+package-lock.json
+
 .vscode/*
