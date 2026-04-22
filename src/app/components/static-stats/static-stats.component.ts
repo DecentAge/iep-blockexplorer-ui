@@ -26,7 +26,7 @@ interface NetworkStats {
               </div>
               <p>Block Time</p>
             </div>
-            <p class="box-heading">avg. 60s</p>
+            <p class="box-heading">60s</p>
           </div>
         </div>
 
@@ -51,7 +51,7 @@ interface NetworkStats {
               <p>Transactions</p>
             </div>
             <p class="box-heading">
-              {{ stats ? ((stats.numberOfTransactions || 0) / (stats.numberOfBlocks || 1) | number:'1.1-1') : '~0.5' }} txs / block
+              {{ stats ? ((stats.numberOfTransactions || 0) / (stats.numberOfBlocks || 1) | number:'1.1-1') : '0.0' }} txs / block
             </p>
           </div>
         </div>
@@ -64,7 +64,7 @@ interface NetworkStats {
               </div>
               <p>Accounts</p>
             </div>
-            <p class="box-heading">{{ (stats?.numberOfAccounts || 45000) | number }}</p>
+            <p class="box-heading">{{ (stats?.numberOfAccounts || 0) | number }}</p>
           </div>
         </div>
 

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "iep-blockexplorer": {
+    "iep-blockexplorer-ui": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/iep-blockexplorer",
+            "outputPath": "dist/iep-blockexplorer-ui",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -70,10 +70,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "iep-blockexplorer:build:production"
+              "buildTarget": "iep-blockexplorer-ui:build:production"
             },
             "development": {
-              "buildTarget": "iep-blockexplorer:build:development"
+              "buildTarget": "iep-blockexplorer-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -81,7 +81,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "iep-blockexplorer:build"
+            "buildTarget": "iep-blockexplorer-ui:build"
           }
         }
       }

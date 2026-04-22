@@ -17,17 +17,17 @@ RUN npm run build
 
 # Create build directory and zip the build output
 RUN mkdir -p /build \
-    && cd /app/dist/iep-blockexplorer \
-    && zip -r /build/iep-blockexplorer.zip .
+    && cd /app/dist/iep-blockexplorer-ui \
+    && zip -r /build/iep-blockexplorer-ui.zip .
 
 # Stage 2: Serve the application with Nginx
 FROM nginx:alpine AS deploy
 
 # Copy the build output to replace the default nginx contents
-COPY --from=build /app/dist/iep-blockexplorer /usr/share/nginx/html
+COPY --from=build /app/dist/iep-blockexplorer-ui /usr/share/nginx/html
 
 # Copy the zip file to /build
-COPY --from=build /build/iep-blockexplorer.zip /build/iep-blockexplorer.zip
+COPY --from=build /build/iep-blockexplorer-ui.zip /build/iep-blockexplorer-ui.zip
 
 # Copy custom nginx config if needed
 COPY nginx.conf /etc/nginx/conf.d/default.conf
