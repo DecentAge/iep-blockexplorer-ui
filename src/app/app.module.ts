@@ -19,10 +19,8 @@ import { AmountTQTPipe } from './shared/pipes/amount-tqt.pipe';
 import { routes } from './app.routes';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
   imports: [
+    AppComponent,
     BrowserModule,
     BrowserAnimationsModule,
     CommonModule,
