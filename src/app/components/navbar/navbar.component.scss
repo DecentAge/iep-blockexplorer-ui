@@ -193,7 +193,7 @@
               background-color: #fff;
               background-image: none;
               border: 1px solid #ccc;
-              border-radius: 4px;
+              border-radius: 0 !important;
               box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
               transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 
@@ -211,8 +211,9 @@
             .btn-infinity {
               background-color: transparent;
               border: none;
+              border-radius: 0 !important;
               color: #fff;
-              font-weight: 600;
+              font-weight: 500;
               font-size: 13px;
               min-height: 34px;
               padding: 6px 12px;
@@ -239,7 +240,7 @@
           display: inline-block;
           padding: 7px 20px;
           font-family: Montserrat, sans-serif;
-          font-weight: 700;
+          font-weight: 500;
           font-size: 14px;
           line-height: 16px;
           border-radius: 50px !important;
@@ -253,6 +254,13 @@
           white-space: nowrap;
           text-decoration: none;
           margin-right: 15px;
+          text-transform: none !important;
+
+          &:hover, &:focus {
+            background-color: #fff;
+            color: #e72d45;
+            border-color: #fff;
+          }
         }
       }
     }
