@@ -48,4 +48,9 @@ export class DataTableComponent {
     if (!this.pagination.currentPage) return false;
     return this.pagination.currentPage >= this.pagination.totalPages;
   }
+  showEllipsis(): boolean {
+    if (!this.pagination || !this.pagination.totalPages || !this.pagination.showPages) return false;
+    const lastShown = this.pagination.showPages[this.pagination.showPages.length - 1];
+    return lastShown < this.pagination.totalPages - 1;
+  }
 }

@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
-import { AmountTQTPipe } from '../../shared/pipes/amount-tqt.pipe';
-
+import { environment } from '../../../environments/environment';
 interface NetworkStats {
   numberOfBlocks?: number;
   numberOfTransactions?: number;
@@ -10,11 +9,13 @@ interface NetworkStats {
   totalFeeNQT?: number;
   numberOfAccounts?: number;
 }
-
+interface BalanceResponse {
+  balanceTQT?: string;
+}
 @Component({
   selector: 'app-static-stats',
   standalone: true,
-  imports: [CommonModule, AmountTQTPipe],
+  imports: [CommonModule],
   template: `
     <div class="col-md-12 static-stats-wrapper">
       <div class="row text-center block-blocks" style="margin:0 -5px 0 -5px;">
@@ -26,10 +27,9 @@ interface NetworkStats {
               </div>
               <p>Block Time</p>
             </div>
-            <p class="box-heading">60s</p>
+            <p class="box-heading">avg. 60s</p>
           </div>
         </div>
-
         <div class="col-lg-2 col-md-4 col-sm-4 block-explorer">
           <div class="panel panel-default">
             <div class="panel-heading">
@@ -38,10 +38,9 @@ interface NetworkStats {
               </div>
               <p>Supply Circulating</p>
             </div>
-            <p class="box-heading">~9.2B <small>XIN</small></p>
+            <p class="box-heading">{{ formatSupply(circulatingSupply) }} <small>XIN</small></p>
           </div>
         </div>
-
         <div class="col-lg-2 col-md-4 col-sm-4 block-explorer">
           <div class="panel panel-default">
             <div class="panel-heading">
@@ -51,11 +50,10 @@ interface NetworkStats {
               <p>Transactions</p>
             </div>
             <p class="box-heading">
-              {{ stats ? ((stats.numberOfTransactions || 0) / (stats.numberOfBlocks || 1) | number:'1.1-1') : '0.0' }} txs / block
+              {{ getTxPerBlock() }} txs / block
             </p>
           </div>
         </div>
-
         <div class="col-lg-2 col-md-4 col-sm-4 block-explorer">
           <div class="panel panel-default">
             <div class="panel-heading">
@@ -64,10 +62,9 @@ interface NetworkStats {
               </div>
               <p>Accounts</p>
             </div>
-            <p class="box-heading">{{ (stats?.numberOfAccounts || 0) | number }}</p>
+            <p class="box-heading">{{ formatNumber(stats?.numberOfAccounts || 0) }}</p>
           </div>
         </div>
-
         <div class="col-lg-2 col-md-4 col-sm-4 block-explorer">
           <div class="panel panel-default">
             <div class="panel-heading">
@@ -84,7 +81,6 @@ interface NetworkStats {
             </p>
           </div>
         </div>
-
         <div class="col-lg-2 col-md-4 col-sm-4 block-explorer">
           <div class="panel panel-default">
             <div class="panel-heading">
@@ -103,22 +99,50 @@ interface NetworkStats {
 })
 export class StaticStatsComponent implements OnInit {
   stats: NetworkStats | null = null;
-
+  circulatingSupply: number = environment.initialSupply;
   constructor(private apiService: ApiService) {}
-
   ngOnInit() {
     this.loadStats();
-    // Auto-refresh every 30 seconds
-    setInterval(() => this.loadStats(), 30000);
+    this.loadCirculatingSupply();
+    setInterval(() => {
+      this.loadStats();
+      this.loadCirculatingSupply();
+    }, 30000);
   }
-
   private loadStats() {
-    this.apiService.get<NetworkStats>('', {requestType: 'getStatistics'}).subscribe({
+    this.apiService.get<NetworkStats>('getStatistics').subscribe({
       next: (data) => this.stats = data,
       error: (error) => {
         console.error('Error loading stats:', error);
-        // Keep trying to load stats even if there's an error
       }
     });
+  }
+  private loadCirculatingSupply() {
+    this.apiService.get<BalanceResponse>('getBalance', {
+      account: environment.genesisAccount
+    }).subscribe({
+      next: (data) => {
+        if (data.balanceTQT) {
+          const balanceTKN = (parseFloat(data.balanceTQT) / environment.tokenQuants) * -1;
+          this.circulatingSupply = balanceTKN || environment.initialSupply;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading balance:', error);
+      }
+    });
+  }
+  formatSupply(value: number): string {
+    return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  formatNumber(value: number): string {
+    return value.toLocaleString('en-US');
+  }
+  getTxPerBlock(): string {
+    if (!this.stats || !this.stats.numberOfBlocks) {
+      return '0.00';
+    }
+    const txPerBlock = (this.stats.numberOfTransactions || 0) / this.stats.numberOfBlocks;
+    return txPerBlock.toFixed(2);
   }
 }

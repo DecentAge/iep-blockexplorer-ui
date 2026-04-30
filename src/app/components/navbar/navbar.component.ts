@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -28,7 +28,7 @@ import { FormsModule } from '@angular/forms';
             <div class="collapse navbar-collapse"
                  [class.in]="!isCollapsed"
                  id="myNavbar">
-              <ul class="nav navbar-nav navbar-right">
+              <ul class="nav navbar-nav pull-right">
                 <li routerLinkActive="active">
                   <a routerLink="/blocks" class="navbar-link">
                     <span class="menu-text">Blocks</span>
@@ -65,18 +65,22 @@ import { FormsModule } from '@angular/forms';
                   </a>
                 </li>
                 <li routerLinkActive="active">
-                  <a href="#" class="navbar-link" (click)="handleLinkClick($event)">
+                  <a routerLink="/stats" class="navbar-link">
                     <span class="menu-text">Statistics</span>
                   </a>
                 </li>
                 <li class="search-and-type">
-                  <form class="navbar-form navbar-right" (ngSubmit)="search()">
+                  <span class="btn btn-infinity btn-md navbar-btn"
+                        type="label">
+                    Mainnet
+                  </span>
+                  <form class="navbar-form" (ngSubmit)="search()">
                     <div class="input-group">
                       <input type="text"
                              class="form-control"
                              placeholder="Enter IP address"
                              name="search"
-                             [class.ng-hide]="!showSearchBar"
+                             *ngIf="showSearchBar"
                              [(ngModel)]="searchTerm">
                       <button class="btn btn-infinity"
                               [class.btn-infinity-enabled]="showSearchBar"
@@ -86,10 +90,6 @@ import { FormsModule } from '@angular/forms';
                       </button>
                     </div>
                   </form>
-                  <span class="btn btn-infinity btn-md navbar-btn"
-                        type="label">
-                    Mainnet
-                  </span>
                 </li>
               </ul>
             </div>
@@ -98,22 +98,17 @@ import { FormsModule } from '@angular/forms';
       </div>
     </nav>
   `,
-  styleUrls: ['./navbar.component.scss']
+  styleUrls: ['./navbar.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class NavbarComponent {
   isCollapsed = true;
   searchTerm = '';
   showSearchBar = false;
 
-  handleLinkClick(event: Event) {
-    event.preventDefault();
-    // Add functionality for these links later
-  }
-
   search() {
     if (this.searchTerm.trim()) {
       console.log('Search for:', this.searchTerm);
-      // Add search functionality here
     }
   }
 }

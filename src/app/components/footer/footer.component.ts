@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ApiService } from '../../core/services/api.service';
 import { environment } from '../../../environments/environment';
-
+interface BlockchainStatus {
+  numberOfBlocks?: number;
+}
 @Component({
   selector: 'app-footer',
   standalone: true,
@@ -11,34 +14,27 @@ import { environment } from '../../../environments/environment';
       <footer class="footer">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-md-6 col-sm-12">
-              <div class="footer-brand">
-                <span class="ms-2">Infinity Economics Platform</span>
-              </div>
+            <div class="col-md-7">
+              <span class="footer-brand">
+                <strong>Infinity BlockExplorer</strong>
+              </span>
               <div class="footer-text">
                 This website is owned by the <span class="text-highlight">Infinity community</span> and managed by the <span class="text-highlight">Infinity Foundation</span>.
               </div>
             </div>
-            <div class="col-md-6 col-sm-12">
+            <div class="col-md-5">
               <div class="footer-stats">
-                <div class="footer-stat-item">
-                  <span class="stat-label">Last Update:</span>
-                  <span class="stat-value">{{ lastUpdate | date:'medium' }}</span>
-                </div>
-                <div class="footer-stat-item">
-                  <span class="stat-label">API Endpoint:</span>
-                  <span class="stat-value">
-                    <i class="bi" [ngClass]="{'bi-check-circle-fill text-success': connected, 'bi-x-circle-fill text-danger': !connected}"></i>
-                    {{ apiEndpoint }}
-                  </span>
-                </div>
-                <div class="footer-stat-item">
-                  <span class="stat-label">Version:</span>
-                  <span class="stat-value">{{ version }}</span>
-                </div>
-              </div>
-              <div class="footer-copyright">
-                © {{ currentYear }} Infinity Economics Platform. All Rights Reserved.
+                <span class="footer-stat-line">
+                  <strong>Date : {{ currentDate }}</strong>
+                  <span class="text-highlight"> | </span>
+                  <strong>Height : {{ currentHeight }}</strong>
+                </span>
+                <br>
+                <span class="footer-stat-line">
+                  Node : {{ connectedURL }}
+                  <span class="text-highlight"> | </span>
+                  Version : {{ version }}
+                </span>
               </div>
             </div>
           </div>
@@ -49,18 +45,34 @@ import { environment } from '../../../environments/environment';
   styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent implements OnInit {
-  currentYear: number = new Date().getFullYear();
-  version: string = environment.version || '1.0.0';
-  lastUpdate: Date = new Date();
-  connected: boolean = true;
-  apiEndpoint: string = environment.apiUrl || 'localhost:7876';
-
-  constructor() { }
-
+  currentHeight: number = 0;
+  connectedURL: string = environment.apiUrl;
+  version: string = environment.version || '';
+  currentDate: string = '';
+  constructor(private apiService: ApiService) {}
   ngOnInit(): void {
-    // Update timestamp every minute
+    this.updateDate();
+    this.loadBlockchainStatus();
     setInterval(() => {
-      this.lastUpdate = new Date();
-    }, 60000);
+      this.updateDate();
+      this.loadBlockchainStatus();
+    }, environment.autoPageRefreshInterval || 60000);
+  }
+  private updateDate() {
+    const now = new Date();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    this.currentDate = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  }
+  private loadBlockchainStatus() {
+    this.apiService.get<BlockchainStatus>('getBlockchainStatus').subscribe({
+      next: (data) => {
+        if (data.numberOfBlocks) {
+          this.currentHeight = data.numberOfBlocks;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading blockchain status:', error);
+      }
+    });
   }
 }

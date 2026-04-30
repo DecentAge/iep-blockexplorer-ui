@@ -5,17 +5,18 @@ import { ApiService } from '../../core/services/api.service';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { AmountTQTPipe } from '../../shared/pipes/amount-tqt.pipe';
 import { DataTableComponent, TableColumn, PaginationConfig } from '../../shared/components/data-table/data-table.component';
-
 interface Block {
   block: string;
   height: number;
   timestamp: number;
   numberOfTransactions: number;
-  totalAmountNQT: number;
-  totalFeeNQT: number;
+  totalAmountTQT: string;
+  totalFeeTQT: string;
+  generatorRS: string;
   generator: string;
+  baseTarget: string;
+  cumulativeDifficulty: string;
 }
-
 @Component({
   selector: 'app-blocks',
   standalone: true,
@@ -32,41 +33,32 @@ interface Block {
           [pagination]="paginationConfig"
           (pageChange)="onPageChange($event)"
           (reload)="reloadBlocks()">
-
           <ng-template #heightTemplate let-row="row">
-            <strong class="block-height">{{ row.height | number }}</strong>
+            <strong class="block-height">{{ row.height }}</strong>
           </ng-template>
-
           <ng-template #blockIdTemplate let-row="row">
-            <a [routerLink]="['/block', row.block]" class="hash-link">
-              {{ row.block | slice:0:12 }}...{{ row.block | slice:-8 }}
-            </a>
+            {{ row.block }}
           </ng-template>
-
           <ng-template #transactionsTemplate let-row="row">
             <span [ngClass]="getTxLabelClass(row.numberOfTransactions)">
               {{ row.numberOfTransactions }}
             </span>
           </ng-template>
-
           <ng-template #amountTemplate let-row="row">
-            <span class="amount-value">{{ (row.totalAmountNQT || 0) | amountTQT }} XIN</span>
+            {{ (row.totalAmountTQT || '0') | amountTQT }}
           </ng-template>
-
           <ng-template #feeTemplate let-row="row">
-            <span class="amount-value">{{ (row.totalFeeNQT || 0) | amountTQT }} XIN</span>
+            {{ (row.totalFeeTQT || '0') | amountTQT }}
           </ng-template>
-
           <ng-template #generatorTemplate let-row="row">
-            <a [routerLink]="['/account', row.generator]" class="hash-link small">
-              {{ row.generator | slice:0:8 }}...{{ row.generator | slice:-6 }}
-            </a>
+            {{ row.generatorRS }}
           </ng-template>
-
           <ng-template #timestampTemplate let-row="row">
-            <span class="timestamp">{{ row.timestamp | timestamp }}</span>
+            {{ row.timestamp | timestamp }}
           </ng-template>
-
+          <ng-template #targetTemplate let-row="row">
+            {{ row.baseTarget }} / {{ row.cumulativeDifficulty }}
+          </ng-template>
         </app-data-table>
       </div>
     </div>
@@ -81,39 +73,37 @@ export class BlocksComponent implements OnInit {
   @ViewChild('feeTemplate', { static: true }) feeTemplate!: TemplateRef<any>;
   @ViewChild('generatorTemplate', { static: true }) generatorTemplate!: TemplateRef<any>;
   @ViewChild('timestampTemplate', { static: true }) timestampTemplate!: TemplateRef<any>;
-
+  @ViewChild('targetTemplate', { static: true }) targetTemplate!: TemplateRef<any>;
   blocks: Block[] = [];
   columns: TableColumn[] = [];
   currentPage: number = 1;
-  pageSize: number = 25;
+  pageSize: number = 10;
   loading: boolean = false;
   isReloading: boolean = false;
   paginationConfig: PaginationConfig = {
     currentPage: 1,
+    totalPages: 100,
     showPages: [1, 2, 3, 4, 5]
   };
-
   constructor(private apiService: ApiService) {}
-
   ngOnInit() {
     this.initializeColumns();
     this.loadBlocks();
     // Auto-refresh every 30 seconds
     setInterval(() => this.loadBlocks(), 30000);
   }
-
   initializeColumns() {
     this.columns = [
       { key: 'height', label: 'Height', template: this.heightTemplate },
       { key: 'block', label: 'Id', template: this.blockIdTemplate },
-      { key: 'numberOfTransactions', label: 'Transactions', template: this.transactionsTemplate },
-      { key: 'totalAmountNQT', label: 'Amount', template: this.amountTemplate },
-      { key: 'totalFeeNQT', label: 'Fee', template: this.feeTemplate },
-      { key: 'generator', label: 'Generator', template: this.generatorTemplate },
-      { key: 'timestamp', label: 'Timestamp', template: this.timestampTemplate }
+      { key: 'numberOfTransactions', label: 'Txs', template: this.transactionsTemplate },
+      { key: 'totalAmountTQT', label: 'Amount', template: this.amountTemplate },
+      { key: 'totalFeeTQT', label: 'Fee', template: this.feeTemplate },
+      { key: 'generatorRS', label: 'Generator', template: this.generatorTemplate },
+      { key: 'timestamp', label: 'Date', template: this.timestampTemplate },
+      { key: 'baseTarget', label: 'Target / Difficulty', template: this.targetTemplate }
     ];
   }
-
   loadBlocks() {
     const wasLoaded = this.blocks.length > 0;
     if (wasLoaded) {
@@ -121,10 +111,8 @@ export class BlocksComponent implements OnInit {
     } else {
       this.loading = true;
     }
-
     const firstIndex = (this.currentPage - 1) * this.pageSize;
     const lastIndex = firstIndex + this.pageSize - 1;
-
     this.apiService.get<{ blocks: Block[] }>('getBlocks', {
       firstIndex: firstIndex,
       lastIndex: lastIndex
@@ -142,14 +130,13 @@ export class BlocksComponent implements OnInit {
       }
     });
   }
-
   updatePagination() {
     this.paginationConfig = {
       currentPage: this.currentPage,
+      totalPages: 100,
       showPages: this.getPageNumbers()
     };
   }
-
   getPageNumbers(): number[] {
     const pages = [];
     for (let i = Math.max(1, this.currentPage - 2); i <= this.currentPage + 2; i++) {
@@ -157,13 +144,10 @@ export class BlocksComponent implements OnInit {
     }
     return pages;
   }
-
   onPageChange(page: number) {
     this.currentPage = page;
     this.loadBlocks();
   }
-
-  // Transaction count label logic matching the original blocks-controller.js
   getTxLabelClass(value: number): string {
     if (value === 0) {
       return 'tx-label label-default';
@@ -176,7 +160,6 @@ export class BlocksComponent implements OnInit {
     }
     return 'tx-label label-default';
   }
-
   reloadBlocks() {
     this.loadBlocks();
   }
