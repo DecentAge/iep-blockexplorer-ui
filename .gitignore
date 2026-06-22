@@ -13,8 +13,5 @@ yarn-error.log*
 /.angular/
 .angular/
 
-# Package lock files
-package-lock.json
-
 .vscode/*
 /iep-blockexplorer-ui.iml
