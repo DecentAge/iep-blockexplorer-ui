@@ -6,7 +6,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies and zip utility
-RUN apk add --no-cache zip && npm i
+RUN apk add --no-cache zip && npm ci
 
 ARG CACHE_BUST=1
 # Copy the rest of the application code
