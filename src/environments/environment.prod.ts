@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://iep-dev-devnet.decentage.io',
+  apiUrl: '', // same-origin (relative): calls <host>/api via the tunnel ingress; works on any deploy host
   genesisAccount: 'XIN-NTLK-Z5GA-WNAV-GW378',
   baseEndPoint: 'api',
   tokenQuants: 100000000,

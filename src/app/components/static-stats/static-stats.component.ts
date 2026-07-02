@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
+import { ConstantsService } from '../../core/services/constants.service';
 import { environment } from '../../../environments/environment';
 interface NetworkStats {
   numberOfBlocks?: number;
@@ -100,7 +101,7 @@ interface BalanceResponse {
 export class StaticStatsComponent implements OnInit {
   stats: NetworkStats | null = null;
   circulatingSupply: number = environment.initialSupply;
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private constants: ConstantsService) {}
   ngOnInit() {
     this.loadStats();
     this.loadCirculatingSupply();
@@ -119,7 +120,7 @@ export class StaticStatsComponent implements OnInit {
   }
   private loadCirculatingSupply() {
     this.apiService.get<BalanceResponse>('getBalance', {
-      account: environment.genesisAccount
+      account: this.constants.genesisAccount
     }).subscribe({
       next: (data) => {
         if (data.balanceTQT) {

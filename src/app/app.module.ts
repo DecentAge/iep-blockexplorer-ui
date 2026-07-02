@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
@@ -17,6 +17,7 @@ import { TransactionDetailComponent } from './features/transactions/transaction-
 import { TimestampPipe } from './shared/pipes/timestamp.pipe';
 import { AmountTQTPipe } from './shared/pipes/amount-tqt.pipe';
 import { routes } from './app.routes';
+import { ConstantsService } from './core/services/constants.service';
 
 @NgModule({
   imports: [
@@ -37,7 +38,16 @@ import { routes } from './app.routes';
     TimestampPipe,
     AmountTQTPipe
   ],
-  providers: [],
+  providers: [
+    {
+      // Load network constants (epoch, genesisAccount) from the connected node's
+      // getConstants BEFORE the app renders, so no per-network values are baked in.
+      provide: APP_INITIALIZER,
+      useFactory: (constants: ConstantsService) => () => constants.load(),
+      deps: [ConstantsService],
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
