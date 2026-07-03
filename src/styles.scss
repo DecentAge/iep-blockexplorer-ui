@@ -1,0 +1,524 @@
+/* Global Styles - Infinity Economics Block Explorer */
+@import 'bootstrap/scss/bootstrap';
+
+/* Infinity Economics Color Variables */
+:root {
+  --primary-color: #e72d45;
+  --secondary-color: #f3931b;
+  --dark-bg: #2c3e50;
+  --light-bg: #f1f2f3;
+  --text-dark: #474747;
+  --text-light: #666;
+  --border-color: #eff5f8;
+  --white: #ffffff;
+}
+
+/* Remove all border-radius globally like original */
+* {
+  border-radius: 0 !important;
+}
+
+/* Body with normal background */
+body {
+  padding: 0;
+  font: 14px 'Montserrat', sans-serif;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+}
+
+p {
+  margin: 0;
+}
+
+/* Main content styling */
+.main-content {
+  background: transparent;
+  padding: 0;
+}
+
+/* Global navbar overrides - must be here to beat Bootstrap 5 specificity */
+.navbar.navbar-default {
+  --bs-navbar-padding-x: 0 !important;
+  --bs-navbar-padding-y: 0 !important;
+  --bs-navbar-brand-margin-end: 0 !important;
+  --bs-navbar-brand-padding-y: 0 !important;
+  padding: 0 !important;
+}
+
+.navbar.navbar-default .container-fluid {
+  --bs-gutter-x: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+.navbar.navbar-default .navbar-brand {
+  padding: 5px 5px 5px 15px !important;
+  margin: 0 !important;
+}
+
+/* Global styles for the application */
+
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f8f9fa;
+}
+
+/* Main content area - adjust for horizontal navbar */
+body {
+  padding-top: 50px !important;
+  margin: 0 !important;
+}
+
+/* Ensure main content doesn't overlap with sidebar */
+app-root {
+  display: block;
+  min-height: 100vh;
+}
+
+/* Component spacing */
+app-static-stats,
+router-outlet,
+app-footer {
+  display: block;
+}
+
+/* Bootstrap form overrides */
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+.btn {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.btn-default {
+  color: #333;
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+.btn-default:hover {
+  color: #333;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}
+
+/* Stats row styling matching original */
+.stats-row {
+  background: transparent;
+  padding: 20px 0;
+  margin: 0;
+
+  .stat-box {
+    background: white;
+    border-bottom: 3px solid var(--primary-color);
+    border-radius: 6px !important;
+    padding: 15px;
+    text-align: center;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+    .stat-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-dark);
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-dark);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+
+/* Block explorer panels for stats */
+.block-explorer {
+  padding: 5px;
+
+  .panel {
+    background: white;
+    border-bottom: 3px solid var(--primary-color);
+    border-radius: 6px !important;
+    padding: 15px 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+    .panel-heading {
+      border: 0;
+      background: transparent;
+      color: var(--text-dark);
+      padding: 10px;
+
+      .block-icon {
+        font-size: 24px;
+        color: var(--primary-color);
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      p {
+        font-size: 12px;
+        font-weight: 600;
+        margin: 0;
+        text-transform: uppercase;
+      }
+    }
+
+    .box-heading {
+      font-weight: 600;
+      color: var(--text-dark);
+      font-size: 16px;
+      margin: 10px 0;
+      padding: 0 10px;
+
+      small {
+        font-size: 12px;
+      }
+
+      .btn {
+        font-size: 12px;
+        color: var(--text-dark);
+        background: transparent;
+        border: none;
+        text-decoration: none;
+
+        &:hover {
+          color: var(--primary-color);
+        }
+      }
+    }
+  }
+}
+
+/* Table styling matching original */
+.data-table {
+  background: white;
+  border-radius: 6px !important;
+  overflow: hidden;
+  margin: 20px 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+  .table {
+    margin: 0;
+    border-radius: 6px !important;
+
+    thead th {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--light-bg);
+      color: var(--text-dark);
+      text-transform: uppercase;
+      border-color: var(--border-color);
+      padding: 12px;
+      border-top: 0;
+      text-align: center;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    tbody {
+      td {
+        color: var(--text-light);
+        padding: 12px;
+        font-weight: 600;
+        font-family: 'Montserrat', sans-serif;
+        background-color: white;
+        border-color: var(--border-color);
+        text-align: center;
+        font-size: 14px;
+
+        a {
+          color: var(--text-light);
+          text-decoration: none;
+
+          &:hover {
+            color: var(--primary-color);
+          }
+        }
+
+        &.timestamp {
+          font-size: 13px;
+        }
+      }
+
+      tr:hover td {
+        background-color: rgba(231, 45, 69, 0.05);
+      }
+    }
+  }
+}
+
+/* Transaction count labels */
+.tx-label {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  min-width: 25px;
+
+  &.label-default {
+    background-color: #6c757d;
+    color: white;
+  }
+
+  &.label-success {
+    background-color: #5cb85c;
+    color: white;
+  }
+
+  &.label-warning {
+    background-color: #f0ad4e;
+    color: white;
+  }
+
+  &.label-danger {
+    background-color: #d9534f;
+    color: white;
+  }
+}
+
+/* Hash links */
+.hash-link {
+  color: var(--text-light);
+  text-decoration: none;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+
+  &:hover {
+    color: var(--primary-color);
+    text-decoration: none;
+  }
+
+  &.small {
+    font-size: 12px;
+  }
+}
+
+/* Block height styling */
+.block-height {
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* Amount values */
+.amount-value {
+  font-weight: 600;
+  color: var(--text-light);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+}
+
+/* View button */
+.btn-view {
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+
+  &:hover {
+    background: linear-gradient(to right, #d62541, #e8871a);
+    color: white;
+    text-decoration: none;
+  }
+}
+
+/* Pagination matching original */
+.page-navigation {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+
+  .pagination {
+    > li > a, > li > span {
+      color: var(--primary-color);
+      border-radius: 50% !important;
+      margin: 0 5px;
+      padding: 6px 12px;
+      min-width: 34px;
+      text-align: center;
+      border: 1px solid #ddd;
+      background: white;
+
+      &:hover {
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: 0px solid transparent;
+      }
+    }
+
+    > li.active > a,
+    > li.active > span {
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      border: 1px solid transparent;
+      color: white;
+    }
+
+    > li.disabled > a,
+    > li.disabled > span {
+      color: #ddd;
+      cursor: not-allowed;
+      background: white;
+    }
+  }
+}
+
+/* Loading container */
+.loading-container {
+  text-align: center;
+  padding: 4rem 0;
+  color: var(--text-dark);
+
+  .spinner-border {
+    color: var(--primary-color);
+    width: 3rem;
+    height: 3rem;
+  }
+
+  p {
+    color: var(--text-dark);
+    margin-top: 1rem;
+  }
+}
+
+/* Footer styling */
+.footer {
+  background: #f8f9fa;
+  color: var(--text-dark);
+  padding: 20px 0;
+  font-family: 'Montserrat', sans-serif;
+  margin-top: 2rem;
+  border-top: 1px solid #dee2e6;
+
+  .navbar-brand {
+    padding: 15px 0;
+    color: var(--text-dark);
+  }
+
+  .label {
+    padding-left: 0;
+    padding-right: 0;
+    background: transparent;
+
+    &.label-xs {
+      color: var(--text-dark) !important;
+      white-space: normal;
+      font-size: 10px;
+      background: transparent;
+      line-height: 1.4;
+    }
+  }
+
+  .footerTex {
+    color: var(--text-dark);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  body {
+    padding: 60px 5px 0px;
+  }
+
+  .block-explorer {
+    margin-bottom: 10px;
+  }
+
+  .data-table {
+    margin: 10px -15px;
+    border-radius: 0 !important;
+
+    .table {
+      font-size: 12px;
+
+      th, td {
+        padding: 8px 4px;
+      }
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .stats-row {
+    margin: 20px 0;
+  }
+}
+
+/* Panel and table border radius override */
+.panel {
+  border-radius: 6px !important;
+}
+
+.data-table table {
+  border-radius: 6px !important;
+}
+
+.pagination > li > a,
+.pagination > li > span {
+  border-radius: 50% !important;
+}
+
+.stats-row .stat-box {
+  border-radius: 6px !important;
+}
+
+.block-explorer .panel {
+  border-radius: 6px !important;
+}

@@ -1,0 +1,31 @@
+/* App component styles matching Infinity Economics original design */
+
+/* Global app container */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Content wrapper to prevent overlap with fixed navbar */
+.content-wrapper {
+  padding-top: 70px;
+  flex: 1;
+}
+
+/* Main content area */
+main {
+  flex: 1;
+  padding-top: 80px;
+}
+
+/* Responsive layout */
+@media (max-width: 767px) {
+  .content-wrapper {
+    padding-top: 80px;
+  }
+
+  main {
+    padding-top: 60px;
+  }
+}

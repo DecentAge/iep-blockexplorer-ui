@@ -1,28 +1,39 @@
-# build environment
-FROM node:12-alpine AS builder
+# Stage 1: Build the Angular application
+FROM node:22-alpine AS build
 WORKDIR /app
-RUN apk add --no-cache git
-RUN apk add --no-cache zip
-RUN npm install -g gulp@4.0.2
-RUN npm link gulp --force
-COPY ["package*.json", "gulpfile.js", ".jshintrc", "default.conf.template", "30-nginx-iep-startup-script.sh", "./"]
-RUN npm install
-COPY ["bower.json", "./"]
-RUN npm run bower install
-COPY /app /app/app
-RUN npm run-script update-version --release_version=$(cat release-version.txt)
-RUN npm run build
-RUN mkdir -p /app/build
-RUN zip -r /app/build/iep-blockexplorer-ui.zip ./dist
 
-# production environment
-FROM nginx:1.20-alpine
-ENV NGINX_PATH=/
-COPY --from=builder /app/dist /usr/share/nginx/html/
-COPY --from=builder /app/build /build
-COPY --from=builder /app/default.conf.template /etc/nginx/templates/default.conf.template
-COPY --from=builder /app/app/env.config.js.template /etc/nginx/templates/env.config.js.template
-COPY --from=builder /app/30-nginx-iep-startup-script.sh /docker-entrypoint.d/30-nginx-iep-startup-script.sh
-RUN chmod 775 /docker-entrypoint.d/30-nginx-iep-startup-script.sh
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install dependencies and zip utility
+RUN apk add --no-cache zip && npm ci
+
+ARG CACHE_BUST=1
+# Copy the rest of the application code
+COPY . .
+
+# Build the application with production configuration
+RUN npm run build
+
+# Create build directory and zip the build output
+RUN mkdir -p /build \
+    && cd /app/dist/iep-blockexplorer-ui \
+    && zip -r /build/iep-blockexplorer-ui.zip .
+
+# Stage 2: Serve the application with Nginx
+FROM nginx:alpine AS deploy
+
+# Copy the build output to replace the default nginx contents
+COPY --from=build /app/dist/iep-blockexplorer-ui /usr/share/nginx/html
+
+# Copy the zip file to /build
+COPY --from=build /build/iep-blockexplorer-ui.zip /build/iep-blockexplorer-ui.zip
+
+# Copy custom nginx config if needed
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 80
 EXPOSE 80
+
+# When the container starts, nginx will start automatically
 CMD ["nginx", "-g", "daemon off;"]

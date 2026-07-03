@@ -1,0 +1,37 @@
+// Stats icons using Bootstrap Icons
+.stats-icon {
+  margin-bottom: 15px;
+
+  i {
+    font-size: 48px;
+    color: #e72d45;
+    display: inline-block;
+    transition: all 0.3s ease;
+  }
+}
+
+.panel:hover .stats-icon i {
+  transform: scale(1.1);
+}
+
+.panel-heading {
+  p {
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0;
+    text-transform: uppercase;
+    color: #474747;
+  }
+}
+
+.box-heading {
+  font-weight: 600;
+  color: #474747;
+  font-size: 16px;
+  margin: 10px 0;
+  padding: 0 10px;
+
+  small {
+    font-size: 12px;
+  }
+}
