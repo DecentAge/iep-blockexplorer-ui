@@ -2,10 +2,11 @@
 
 ## [Unreleased]
 
-## [0.4.1] - 2026-06-24
+## [0.4.1] - 2026-07-06
 ### Changed
 - Upgraded to Angular 20 (ng-bootstrap 19, TypeScript 5.8, zone.js 0.15) on Node 22 build images; reproducible npm ci builds with committed package-lock.json.
 - UI/styling consistency refinements.
+- Network constants are now loaded dynamically at runtime via a new ConstantsService, decoupling them from build-time config.
 
 ## [0.3.x and earlier]
 
