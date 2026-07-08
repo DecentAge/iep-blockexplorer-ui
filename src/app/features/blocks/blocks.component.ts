@@ -34,10 +34,10 @@ interface Block {
           (pageChange)="onPageChange($event)"
           (reload)="reloadBlocks()">
           <ng-template #heightTemplate let-row="row">
-            <strong class="block-height">{{ row.height }}</strong>
+            <a [routerLink]="['/block', row.block]"><strong class="block-height">{{ row.height }}</strong></a>
           </ng-template>
           <ng-template #blockIdTemplate let-row="row">
-            {{ row.block }}
+            <a [routerLink]="['/block', row.block]">{{ row.block }}</a>
           </ng-template>
           <ng-template #transactionsTemplate let-row="row">
             <span [ngClass]="getTxLabelClass(row.numberOfTransactions)">
@@ -51,7 +51,7 @@ interface Block {
             {{ (row.totalFeeTQT || '0') | amountTQT }}
           </ng-template>
           <ng-template #generatorTemplate let-row="row">
-            {{ row.generatorRS }}
+            <a [routerLink]="['/account', row.generatorRS || row.generator]">{{ row.generatorRS }}</a>
           </ng-template>
           <ng-template #timestampTemplate let-row="row">
             {{ row.timestamp | timestamp }}
@@ -139,7 +139,8 @@ export class BlocksComponent implements OnInit {
   }
   getPageNumbers(): number[] {
     const pages = [];
-    for (let i = Math.max(1, this.currentPage - 2); i <= this.currentPage + 2; i++) {
+    const end = Math.min(this.paginationConfig.totalPages || 100, this.currentPage + 2);
+    for (let i = Math.max(1, this.currentPage - 2); i <= end; i++) {
       pages.push(i);
     }
     return pages;

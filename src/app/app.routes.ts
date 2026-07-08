@@ -8,6 +8,7 @@ import { AssetsComponent } from './features/assets/assets.component';
 import { CurrenciesComponent } from './features/currencies/currencies.component';
 import { VotingComponent } from './features/voting/voting.component';
 import { DistributionComponent } from './features/distribution/distribution.component';
+import { AccountDetailComponent } from './features/accounts/account-detail.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/blocks', pathMatch: 'full' },
@@ -15,6 +16,7 @@ export const routes: Routes = [
   { path: 'block/:id', component: BlockDetailComponent },
   { path: 'transactions', component: TransactionsComponent },
   { path: 'transaction/:id', component: TransactionDetailComponent },
+  { path: 'account/:id', component: AccountDetailComponent },
   { path: 'unconfirmedTransactions', component: UnconfirmedComponent },
   { path: 'assets', component: AssetsComponent },
   { path: 'currencies', component: CurrenciesComponent },
