@@ -39,7 +39,28 @@ export class DataTableComponent {
   }
 
   onPageChange(page: number) {
+    if (!this.pagination) return;
+    const total = this.pagination.totalPages || 1;
+    if (page < 1 || page > total || page === this.pagination.currentPage) return;
     this.pageChange.emit(page);
+  }
+
+  hasPrev(): boolean {
+    return !!this.pagination && (this.pagination.currentPage || 1) > 1;
+  }
+  hasNext(): boolean {
+    if (!this.pagination) return false;
+    return (this.pagination.currentPage || 1) < (this.pagination.totalPages || 1);
+  }
+  showFirst(): boolean {
+    return !!this.pagination && !!this.pagination.showPages && this.pagination.showPages[0] > 1;
+  }
+  showFirstEllipsis(): boolean {
+    return !!this.pagination && !!this.pagination.showPages && this.pagination.showPages[0] > 2;
+  }
+  showLast(): boolean {
+    if (!this.pagination || !this.pagination.totalPages || !this.pagination.showPages) return false;
+    return this.pagination.showPages[this.pagination.showPages.length - 1] < this.pagination.totalPages;
   }
 
   isLastPageDisabled(): boolean {

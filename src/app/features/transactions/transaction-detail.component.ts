@@ -11,10 +11,12 @@ interface TransactionDetail {
   subtype: number;
   timestamp: number;
   deadline: number;
-  amountNQT: number;
-  feeNQT: number;
+  amountTQT: string;
+  feeTQT: string;
   sender: string;
+  senderRS?: string;
   recipient?: string;
+  recipientRS?: string;
   confirmations: number;
 }
 
@@ -49,19 +51,19 @@ interface TransactionDetail {
                 </tr>
                 <tr>
                   <td><strong>Amount:</strong></td>
-                  <td>{{ transaction.amountNQT | amountTQT }}</td>
+                  <td>{{ transaction.amountTQT | amountTQT }}</td>
                 </tr>
                 <tr>
                   <td><strong>Fee:</strong></td>
-                  <td>{{ transaction.feeNQT | amountTQT }}</td>
+                  <td>{{ transaction.feeTQT | amountTQT }}</td>
                 </tr>
                 <tr>
                   <td><strong>Sender:</strong></td>
-                  <td><code>{{ transaction.sender }}</code></td>
+                  <td><a [routerLink]="['/account', transaction.senderRS || transaction.sender]"><code>{{ transaction.senderRS || transaction.sender }}</code></a></td>
                 </tr>
                 <tr *ngIf="transaction.recipient">
                   <td><strong>Recipient:</strong></td>
-                  <td><code>{{ transaction.recipient }}</code></td>
+                  <td><a [routerLink]="['/account', transaction.recipientRS || transaction.recipient]"><code>{{ transaction.recipientRS || transaction.recipient }}</code></a></td>
                 </tr>
                 <tr>
                   <td><strong>Timestamp:</strong></td>

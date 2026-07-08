@@ -1,7 +1,8 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { ApiService } from '../../core/services/api.service';
 
 @Component({
   selector: 'app-navbar',
@@ -78,14 +79,13 @@ import { FormsModule } from '@angular/forms';
                     <div class="input-group">
                       <input type="text"
                              class="form-control"
-                             placeholder="Enter IP address"
+                             placeholder="Height / Block ID / Transaction"
                              name="search"
                              *ngIf="showSearchBar"
                              [(ngModel)]="searchTerm">
                       <button class="btn btn-infinity"
                               [class.btn-infinity-enabled]="showSearchBar"
-                              type="submit"
-                              (click)="!showSearchBar ? showSearchBar = !showSearchBar : search()">
+                              type="submit">
                         <i class="fa fa-search" aria-hidden="true"></i>
                       </button>
                     </div>
@@ -106,9 +106,44 @@ export class NavbarComponent {
   searchTerm = '';
   showSearchBar = false;
 
+  constructor(private router: Router, private api: ApiService) {}
+
   search() {
-    if (this.searchTerm.trim()) {
-      console.log('Search for:', this.searchTerm);
+    const term = this.searchTerm.trim();
+    if (!term) { this.showSearchBar = true; return; }
+    // The node API answers with HTTP 200 + errorCode for "not found", so probe
+    // each type and navigate to the first hit.
+    if (/^XIN-/i.test(term)) {
+      this.api.get<any>('getAccount', { account: term }).subscribe(res => {
+        if (res && !res.errorCode) { this.goto(['/account', term]); return; }
+        this.notFound(term);
+      });
+    } else if (/^\d+$/.test(term)) {
+      this.api.get<any>('getBlock', { block: term }).subscribe(res => {
+        if (res && !res.errorCode) { this.goto(['/block', term]); return; }
+        this.api.get<any>('getBlock', { height: term }).subscribe(r2 => {
+          if (r2 && !r2.errorCode && r2.block) { this.goto(['/block', r2.block]); return; }
+          this.api.get<any>('getTransaction', { transaction: term }).subscribe(r3 => {
+            if (r3 && !r3.errorCode) { this.goto(['/transaction', term]); return; }
+            this.notFound(term);
+          });
+        });
+      });
+    } else {
+      this.api.get<any>('getTransaction', { fullHash: term }).subscribe(res => {
+        if (res && !res.errorCode && res.transaction) { this.goto(['/transaction', res.transaction]); return; }
+        this.notFound(term);
+      });
     }
+  }
+
+  private goto(commands: any[]) {
+    this.searchTerm = '';
+    this.showSearchBar = false;
+    this.router.navigate(commands);
+  }
+
+  private notFound(term: string) {
+    alert(`No account, block or transaction found for "${term}".`);
   }
 }
