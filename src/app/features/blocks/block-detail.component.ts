@@ -10,9 +10,10 @@ interface BlockDetail {
   height: number;
   timestamp: number;
   numberOfTransactions: number;
-  totalAmountNQT: number;
-  totalFeeNQT: number;
+  totalAmountTQT: string;
+  totalFeeTQT: string;
   generator: string;
+  generatorRS: string;
   generatorPublicKey: string;
   payloadLength: number;
   version: number;
@@ -60,7 +61,7 @@ interface BlockDetail {
                     </tr>
                     <tr>
                       <td><strong>Total Amount:</strong></td>
-                      <td>{{ block.totalAmountNQT | amountTQT }}</td>
+                      <td>{{ block.totalAmountTQT | amountTQT }}</td>
                     </tr>
                   </table>
                 </div>
@@ -68,11 +69,11 @@ interface BlockDetail {
                   <table class="table table-borderless">
                     <tr>
                       <td><strong>Total Fee:</strong></td>
-                      <td>{{ block.totalFeeNQT | amountTQT }}</td>
+                      <td>{{ block.totalFeeTQT | amountTQT }}</td>
                     </tr>
                     <tr>
                       <td><strong>Generator:</strong></td>
-                      <td><code>{{ block.generator }}</code></td>
+                      <td><a [routerLink]="['/account', block.generatorRS || block.generator]"><code>{{ block.generatorRS || block.generator }}</code></a></td>
                     </tr>
                     <tr>
                       <td><strong>Version:</strong></td>
@@ -120,9 +121,22 @@ export class BlockDetailComponent implements OnInit {
   }
 
   private loadBlock() {
-    this.apiService.get<BlockDetail>('getBlock', { block: this.blockId })
+    // Accept either a block id or a height in the route param: try id first,
+    // fall back to height. The node API answers 200 + errorCode when not found.
+    this.apiService.get<any>('getBlock', { block: this.blockId })
       .subscribe({
-        next: (data) => this.block = data,
+        next: (data) => {
+          if (data && !data.errorCode) { this.block = data; }
+          else { this.loadBlockByHeight(); }
+        },
+        error: () => this.loadBlockByHeight()
+      });
+  }
+
+  private loadBlockByHeight() {
+    this.apiService.get<any>('getBlock', { height: this.blockId })
+      .subscribe({
+        next: (data) => { if (data && !data.errorCode) this.block = data; },
         error: (error) => console.error('Error loading block:', error)
       });
   }

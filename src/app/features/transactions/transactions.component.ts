@@ -11,8 +11,8 @@ interface Transaction {
   type: number;
   subtype: number;
   timestamp: number;
-  amountNQT: number;
-  feeNQT: number;
+  amountTQT: string;
+  feeTQT: string;
   sender: string;
   senderRS?: string;
   recipient?: string;
@@ -49,26 +49,26 @@ interface Transaction {
         </ng-template>
 
         <ng-template #senderTemplate let-row>
-          <span class="hash-link small">
+          <a class="hash-link small" [routerLink]="['/account', row.senderRS || row.sender]">
             {{ row.senderRS || (row.sender | slice:0:8) + '...' + (row.sender | slice:-6) }}
-          </span>
+          </a>
         </ng-template>
 
         <ng-template #recipientTemplate let-row>
-          <span class="hash-link small" *ngIf="row.recipient || row.recipientRS; else noRecipient">
+          <a class="hash-link small" *ngIf="row.recipient || row.recipientRS; else noRecipient" [routerLink]="['/account', row.recipientRS || row.recipient]">
             {{ row.recipientRS || (row.recipient | slice:0:8) + '...' + (row.recipient | slice:-6) }}
-          </span>
+          </a>
           <ng-template #noRecipient>
             <span class="text-muted">-</span>
           </ng-template>
         </ng-template>
 
         <ng-template #amountTemplate let-row>
-          <span class="amount-value">{{ (row.amountNQT || 0) | amountTQT }} XIN</span>
+          <span class="amount-value">{{ (row.amountTQT || 0) | amountTQT }} XIN</span>
         </ng-template>
 
         <ng-template #feeTemplate let-row>
-          <span class="amount-value">{{ (row.feeNQT || 0) | amountTQT }} XIN</span>
+          <span class="amount-value">{{ (row.feeTQT || 0) | amountTQT }} XIN</span>
         </ng-template>
 
         <ng-template #timestampTemplate let-row>
@@ -114,8 +114,8 @@ export class TransactionsComponent implements OnInit {
       { key: 'type', label: 'Type', template: this.typeTemplate },
       { key: 'sender', label: 'From', template: this.senderTemplate },
       { key: 'recipient', label: 'To', template: this.recipientTemplate },
-      { key: 'amountNQT', label: 'Amount', template: this.amountTemplate },
-      { key: 'feeNQT', label: 'Fee', template: this.feeTemplate },
+      { key: 'amountTQT', label: 'Amount', template: this.amountTemplate },
+      { key: 'feeTQT', label: 'Fee', template: this.feeTemplate },
       { key: 'timestamp', label: 'Age', template: this.timestampTemplate }
     ];
   }
