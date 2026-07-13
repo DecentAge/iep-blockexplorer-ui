@@ -78,7 +78,6 @@ import { ModalService, DetailKind } from '../../shared/services/modal.service';
                   </a>
                 </li>
                 <li class="search-and-type">
-                  <span class="network-label">{{ networkName }}</span>
                   <form class="navbar-form" (ngSubmit)="search()">
                     <div class="input-group">
                       <input type="text"
@@ -95,6 +94,7 @@ import { ModalService, DetailKind } from '../../shared/services/modal.service';
                       </button>
                     </div>
                   </form>
+                  <span class="network-label">{{ networkName }}</span>
                 </li>
               </ul>
             </div>
