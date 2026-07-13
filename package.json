@@ -3,9 +3,10 @@
   "version": "0.4.1",
   "description": "Infinity Block Explorer",
   "scripts": {
-    "prestart": "npm install",
+    "prestart": "npm install && node scripts/generate-env-config.mjs",
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 --port 80 --disable-host-check",
+    "prebuild": "node scripts/generate-env-config.mjs",
     "build": "ng build --configuration=production --base-href /blockexplorer/ --deploy-url /blockexplorer/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"

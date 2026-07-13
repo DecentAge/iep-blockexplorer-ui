@@ -5,6 +5,7 @@ import { ApiService } from '../../core/services/api.service';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { AmountTQTPipe } from '../../shared/pipes/amount-tqt.pipe';
 import { DataTableComponent, TableColumn, PaginationConfig } from '../../shared/components/data-table/data-table.component';
+import { ModalService } from '../../shared/services/modal.service';
 interface Block {
   block: string;
   height: number;
@@ -34,10 +35,10 @@ interface Block {
           (pageChange)="onPageChange($event)"
           (reload)="reloadBlocks()">
           <ng-template #heightTemplate let-row="row">
-            <strong class="block-height">{{ row.height }}</strong>
+            <a class="block-height" style="cursor:pointer" (click)="modal.open('block', row.block)"><strong>{{ row.height }}</strong></a>
           </ng-template>
           <ng-template #blockIdTemplate let-row="row">
-            {{ row.block }}
+            <a class="hash-link" style="cursor:pointer" (click)="modal.open('block', row.block)">{{ row.block }}</a>
           </ng-template>
           <ng-template #transactionsTemplate let-row="row">
             <span [ngClass]="getTxLabelClass(row.numberOfTransactions)">
@@ -51,7 +52,7 @@ interface Block {
             {{ (row.totalFeeTQT || '0') | amountTQT }}
           </ng-template>
           <ng-template #generatorTemplate let-row="row">
-            {{ row.generatorRS }}
+            <a class="hash-link" style="cursor:pointer" (click)="modal.open('account', row.generatorRS || row.generator)">{{ row.generatorRS }}</a>
           </ng-template>
           <ng-template #timestampTemplate let-row="row">
             {{ row.timestamp | timestamp }}
@@ -85,7 +86,7 @@ export class BlocksComponent implements OnInit {
     totalPages: 100,
     showPages: [1, 2, 3, 4, 5]
   };
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, public modal: ModalService) {}
   ngOnInit() {
     this.initializeColumns();
     this.loadBlocks();

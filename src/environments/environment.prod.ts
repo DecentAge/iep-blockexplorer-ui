@@ -9,5 +9,5 @@ export const environment = {
   initialSupply: 9000000000,
   autoPageRefreshInterval: 60000,
   version: '',
-  networkEnvironment: 'devnet'
+  networkEnvironment: 'mainnet'
 };

@@ -1,7 +1,10 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { ApiService } from '../../core/services/api.service';
+import { getNetworkEnvironment } from '../../core/network-environment';
+import { ModalService, DetailKind } from '../../shared/services/modal.service';
 
 @Component({
   selector: 'app-navbar',
@@ -69,16 +72,18 @@ import { FormsModule } from '@angular/forms';
                     <span class="menu-text">Statistics</span>
                   </a>
                 </li>
+                <li>
+                  <a href="/peerexplorer" class="navbar-link">
+                    <span class="menu-text">Peer Explorer</span>
+                  </a>
+                </li>
                 <li class="search-and-type">
-                  <span class="btn btn-infinity btn-md navbar-btn"
-                        type="label">
-                    Mainnet
-                  </span>
+                  <span class="network-label">{{ networkName }}</span>
                   <form class="navbar-form" (ngSubmit)="search()">
                     <div class="input-group">
                       <input type="text"
                              class="form-control"
-                             placeholder="Enter IP address"
+                             placeholder="Height / Block ID / Transaction / Account"
                              name="search"
                              *ngIf="showSearchBar"
                              [(ngModel)]="searchTerm">
@@ -105,10 +110,67 @@ export class NavbarComponent {
   isCollapsed = true;
   searchTerm = '';
   showSearchBar = false;
+  networkName = getNetworkEnvironment().toUpperCase();
+
+  constructor(private router: Router, private api: ApiService, public modal: ModalService) {}
+
+  private goto(kind: DetailKind, id: string) {
+    this.modal.open(kind, id);
+    this.searchTerm = '';
+    this.showSearchBar = false;
+  }
 
   search() {
-    if (this.searchTerm.trim()) {
-      console.log('Search for:', this.searchTerm);
+    const term = this.searchTerm.trim();
+    if (!term) return;
+
+    if (term.toUpperCase().startsWith('XIN-')) {
+      this.api.get<any>('getAccount', { account: term }).subscribe({
+        next: res => res && !res.errorCode
+          ? this.goto('account', term)
+          : this.notFound(term),
+        error: () => this.notFound(term)
+      });
+    } else if (/^\d+$/.test(term)) {
+      this.searchNumeric(term);
+    } else {
+      this.api.get<any>('getTransaction', { fullHash: term }).subscribe({
+        next: res => res && !res.errorCode
+          ? this.goto('transaction', res.transaction)
+          : this.notFound(term),
+        error: () => this.notFound(term)
+      });
     }
+  }
+
+  private searchNumeric(term: string) {
+    this.api.get<any>('getBlock', { block: term }).subscribe({
+      next: block => {
+        if (block && !block.errorCode) {
+          this.goto('block', block.block);
+          return;
+        }
+        this.api.get<any>('getBlock', { height: term }).subscribe({
+          next: byHeight => {
+            if (byHeight && !byHeight.errorCode) {
+              this.goto('block', byHeight.block);
+              return;
+            }
+            this.api.get<any>('getTransaction', { transaction: term }).subscribe({
+              next: tx => tx && !tx.errorCode
+                ? this.goto('transaction', term)
+                : this.notFound(term),
+              error: () => this.notFound(term)
+            });
+          },
+          error: () => this.notFound(term)
+        });
+      },
+      error: () => this.notFound(term)
+    });
+  }
+
+  private notFound(term: string) {
+    window.alert(`No account, block or transaction found for "${term}".`);
   }
 }

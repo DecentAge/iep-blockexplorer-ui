@@ -235,32 +235,20 @@
           }
         }
 
-        .navbar-btn {
-          position: relative;
+        .network-label {
           display: inline-block;
-          padding: 7px 20px;
+          margin-right: 15px;
+          padding: 5px 16px;
           font-family: Montserrat, sans-serif;
-          font-weight: 500;
+          font-weight: 700;
           font-size: 14px;
           line-height: 16px;
-          border-radius: 50px !important;
-          min-width: 130px;
-          border: 2px solid rgba(255, 255, 255, 0.5);
-          background-clip: padding-box;
-          background: transparent;
-          cursor: pointer;
+          letter-spacing: 1px;
           color: #fff;
-          text-align: center;
+          text-transform: uppercase;
           white-space: nowrap;
-          text-decoration: none;
-          margin-right: 15px;
-          text-transform: none !important;
-
-          &:hover, &:focus {
-            background-color: #fff;
-            color: #e72d45;
-            border-color: #fff;
-          }
+          border: 2px solid rgba(255, 255, 255, 0.55);
+          border-radius: 50px;
         }
       }
     }
@@ -332,7 +320,7 @@
             }
           }
 
-          .navbar-btn {
+          .network-label {
             margin: 10px 15px 15px;
             text-align: center;
           }
