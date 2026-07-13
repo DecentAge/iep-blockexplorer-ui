@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/services/api.service';
+import { getNetworkEnvironment } from '../../core/network-environment';
+import { ModalService, DetailKind } from '../../shared/services/modal.service';
 
 @Component({
   selector: 'app-navbar',
@@ -70,22 +72,25 @@ import { ApiService } from '../../core/services/api.service';
                     <span class="menu-text">Statistics</span>
                   </a>
                 </li>
+                <li>
+                  <a href="/peerexplorer" class="navbar-link">
+                    <span class="menu-text">Peer Explorer</span>
+                  </a>
+                </li>
                 <li class="search-and-type">
-                  <span class="btn btn-infinity btn-md navbar-btn"
-                        type="label">
-                    Mainnet
-                  </span>
+                  <span class="network-label">{{ networkName }}</span>
                   <form class="navbar-form" (ngSubmit)="search()">
                     <div class="input-group">
                       <input type="text"
                              class="form-control"
-                             placeholder="Height / Block ID / Transaction"
+                             placeholder="Height / Block ID / Transaction / Account"
                              name="search"
                              *ngIf="showSearchBar"
                              [(ngModel)]="searchTerm">
                       <button class="btn btn-infinity"
                               [class.btn-infinity-enabled]="showSearchBar"
-                              type="submit">
+                              type="submit"
+                              (click)="!showSearchBar ? showSearchBar = !showSearchBar : search()">
                         <i class="fa fa-search" aria-hidden="true"></i>
                       </button>
                     </div>
@@ -105,45 +110,67 @@ export class NavbarComponent {
   isCollapsed = true;
   searchTerm = '';
   showSearchBar = false;
+  networkName = getNetworkEnvironment().toUpperCase();
 
-  constructor(private router: Router, private api: ApiService) {}
+  constructor(private router: Router, private api: ApiService, public modal: ModalService) {}
+
+  private goto(kind: DetailKind, id: string) {
+    this.modal.open(kind, id);
+    this.searchTerm = '';
+    this.showSearchBar = false;
+  }
 
   search() {
     const term = this.searchTerm.trim();
-    if (!term) { this.showSearchBar = true; return; }
-    // The node API answers with HTTP 200 + errorCode for "not found", so probe
-    // each type and navigate to the first hit.
-    if (/^XIN-/i.test(term)) {
-      this.api.get<any>('getAccount', { account: term }).subscribe(res => {
-        if (res && !res.errorCode) { this.goto(['/account', term]); return; }
-        this.notFound(term);
+    if (!term) return;
+
+    if (term.toUpperCase().startsWith('XIN-')) {
+      this.api.get<any>('getAccount', { account: term }).subscribe({
+        next: res => res && !res.errorCode
+          ? this.goto('account', term)
+          : this.notFound(term),
+        error: () => this.notFound(term)
       });
     } else if (/^\d+$/.test(term)) {
-      this.api.get<any>('getBlock', { block: term }).subscribe(res => {
-        if (res && !res.errorCode) { this.goto(['/block', term]); return; }
-        this.api.get<any>('getBlock', { height: term }).subscribe(r2 => {
-          if (r2 && !r2.errorCode && r2.block) { this.goto(['/block', r2.block]); return; }
-          this.api.get<any>('getTransaction', { transaction: term }).subscribe(r3 => {
-            if (r3 && !r3.errorCode) { this.goto(['/transaction', term]); return; }
-            this.notFound(term);
-          });
-        });
-      });
+      this.searchNumeric(term);
     } else {
-      this.api.get<any>('getTransaction', { fullHash: term }).subscribe(res => {
-        if (res && !res.errorCode && res.transaction) { this.goto(['/transaction', res.transaction]); return; }
-        this.notFound(term);
+      this.api.get<any>('getTransaction', { fullHash: term }).subscribe({
+        next: res => res && !res.errorCode
+          ? this.goto('transaction', res.transaction)
+          : this.notFound(term),
+        error: () => this.notFound(term)
       });
     }
   }
 
-  private goto(commands: any[]) {
-    this.searchTerm = '';
-    this.showSearchBar = false;
-    this.router.navigate(commands);
+  private searchNumeric(term: string) {
+    this.api.get<any>('getBlock', { block: term }).subscribe({
+      next: block => {
+        if (block && !block.errorCode) {
+          this.goto('block', block.block);
+          return;
+        }
+        this.api.get<any>('getBlock', { height: term }).subscribe({
+          next: byHeight => {
+            if (byHeight && !byHeight.errorCode) {
+              this.goto('block', byHeight.block);
+              return;
+            }
+            this.api.get<any>('getTransaction', { transaction: term }).subscribe({
+              next: tx => tx && !tx.errorCode
+                ? this.goto('transaction', term)
+                : this.notFound(term),
+              error: () => this.notFound(term)
+            });
+          },
+          error: () => this.notFound(term)
+        });
+      },
+      error: () => this.notFound(term)
+    });
   }
 
   private notFound(term: string) {
-    alert(`No account, block or transaction found for "${term}".`);
+    window.alert(`No account, block or transaction found for "${term}".`);
   }
 }

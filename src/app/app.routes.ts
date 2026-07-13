@@ -16,11 +16,11 @@ export const routes: Routes = [
   { path: 'block/:id', component: BlockDetailComponent },
   { path: 'transactions', component: TransactionsComponent },
   { path: 'transaction/:id', component: TransactionDetailComponent },
-  { path: 'account/:id', component: AccountDetailComponent },
   { path: 'unconfirmedTransactions', component: UnconfirmedComponent },
   { path: 'assets', component: AssetsComponent },
   { path: 'currencies', component: CurrenciesComponent },
   { path: 'polls', component: VotingComponent },
   { path: 'distributions', component: DistributionComponent },
+  { path: 'account/:id', component: AccountDetailComponent },
   { path: '**', redirectTo: '/blocks' }
 ];
