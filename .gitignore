@@ -15,3 +15,6 @@ yarn-error.log*
 
 .vscode/*
 /iep-blockexplorer-ui.iml
+
+# Generated at build/start from NETWORK_ENVIRONMENT
+/src/env.config.js

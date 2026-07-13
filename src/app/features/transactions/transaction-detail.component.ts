@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
 import { AmountTQTPipe } from '../../shared/pipes/amount-tqt.pipe';
+import { transactionTypeName } from './transactions.component';
+import { ModalService } from '../../shared/services/modal.service';
 
 interface TransactionDetail {
   transaction: string;
+  fullHash?: string;
   type: number;
   subtype: number;
   timestamp: number;
-  deadline: number;
   amountTQT: string;
   feeTQT: string;
   sender: string;
@@ -18,6 +20,8 @@ interface TransactionDetail {
   recipient?: string;
   recipientRS?: string;
   confirmations: number;
+  block?: string;
+  height?: number;
 }
 
 @Component({
@@ -40,30 +44,38 @@ interface TransactionDetail {
               <h4>Transaction Details</h4>
             </div>
             <div class="card-body">
-              <table class="table table-borderless">
+              <table class="table">
                 <tr>
                   <td><strong>Transaction ID:</strong></td>
                   <td><code>{{ transaction.transaction }}</code></td>
                 </tr>
+                <tr *ngIf="transaction.fullHash">
+                  <td><strong>Full Hash:</strong></td>
+                  <td><code>{{ transaction.fullHash }}</code></td>
+                </tr>
                 <tr>
                   <td><strong>Type:</strong></td>
-                  <td>{{ transaction.type }}.{{ transaction.subtype }}</td>
+                  <td>{{ getTypeText(transaction.type, transaction.subtype) }}</td>
                 </tr>
                 <tr>
                   <td><strong>Amount:</strong></td>
-                  <td>{{ transaction.amountTQT | amountTQT }}</td>
+                  <td>{{ (transaction.amountTQT || '0') | amountTQT }} XIN</td>
                 </tr>
                 <tr>
                   <td><strong>Fee:</strong></td>
-                  <td>{{ transaction.feeTQT | amountTQT }}</td>
+                  <td>{{ (transaction.feeTQT || '0') | amountTQT }} XIN</td>
                 </tr>
                 <tr>
                   <td><strong>Sender:</strong></td>
-                  <td><a [routerLink]="['/account', transaction.senderRS || transaction.sender]"><code>{{ transaction.senderRS || transaction.sender }}</code></a></td>
+                  <td><a style="cursor:pointer" (click)="modal.open('account', transaction.senderRS || transaction.sender)"><code>{{ transaction.senderRS || transaction.sender }}</code></a></td>
                 </tr>
-                <tr *ngIf="transaction.recipient">
+                <tr *ngIf="transaction.recipient || transaction.recipientRS">
                   <td><strong>Recipient:</strong></td>
-                  <td><a [routerLink]="['/account', transaction.recipientRS || transaction.recipient]"><code>{{ transaction.recipientRS || transaction.recipient }}</code></a></td>
+                  <td><a style="cursor:pointer" (click)="modal.open('account', transaction.recipientRS || transaction.recipient)"><code>{{ transaction.recipientRS || transaction.recipient }}</code></a></td>
+                </tr>
+                <tr *ngIf="transaction.block">
+                  <td><strong>Block:</strong></td>
+                  <td><a style="cursor:pointer" (click)="modal.open('block', transaction.block)">{{ transaction.height | number }}</a></td>
                 </tr>
                 <tr>
                   <td><strong>Timestamp:</strong></td>
@@ -89,19 +101,25 @@ interface TransactionDetail {
   styleUrls: ['./transaction-detail.component.scss']
 })
 export class TransactionDetailComponent implements OnInit {
+  @Input() transactionId: string = '';
   transaction: TransactionDetail | null = null;
-  transactionId: string = '';
+  getTypeText = transactionTypeName;
 
   constructor(
     private route: ActivatedRoute,
-    private apiService: ApiService
+    private apiService: ApiService,
+    public modal: ModalService
   ) {}
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      this.transactionId = params['id'];
+    if (this.transactionId) {
       this.loadTransaction();
-    });
+    } else {
+      this.route.params.subscribe(params => {
+        this.transactionId = params['id'];
+        this.loadTransaction();
+      });
+    }
   }
 
   private loadTransaction() {

@@ -3,10 +3,11 @@ import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { StaticStatsComponent } from './components/static-stats/static-stats.component';
+import { DetailModalComponent } from './shared/components/detail-modal/detail-modal.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavbarComponent, FooterComponent, StaticStatsComponent],
+  imports: [RouterOutlet, NavbarComponent, FooterComponent, StaticStatsComponent, DetailModalComponent],
   template: `
     <div class="app-container">
       <app-navbar></app-navbar>
@@ -16,6 +17,7 @@ import { StaticStatsComponent } from './components/static-stats/static-stats.com
       </div>
       <app-footer></app-footer>
     </div>
+    <app-detail-modal></app-detail-modal>
   `,
   styleUrls: ['./app.component.scss']
 })
