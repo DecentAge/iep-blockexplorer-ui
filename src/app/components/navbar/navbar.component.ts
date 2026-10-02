@@ -31,6 +31,18 @@ import { ModalService, DetailKind } from '../../shared/services/modal.service';
             <div class="collapse navbar-collapse"
                  [class.in]="!isCollapsed"
                  id="myNavbar">
+              <ul class="nav navbar-nav explorer-tabs">
+                <li>
+                  <a href="/peerexplorer" class="navbar-link">
+                    <span class="menu-text">Nodes</span>
+                  </a>
+                </li>
+                <li class="active">
+                  <a routerLink="/" class="navbar-link">
+                    <span class="menu-text">Blockexplorer</span>
+                  </a>
+                </li>
+              </ul>
               <ul class="nav navbar-nav pull-right">
                 <li routerLinkActive="active">
                   <a routerLink="/blocks" class="navbar-link">
@@ -70,11 +82,6 @@ import { ModalService, DetailKind } from '../../shared/services/modal.service';
                 <li routerLinkActive="active">
                   <a routerLink="/stats" class="navbar-link">
                     <span class="menu-text">Statistics</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="/peerexplorer" class="navbar-link">
-                    <span class="menu-text">Peer Explorer</span>
                   </a>
                 </li>
                 <li class="search-and-type">
