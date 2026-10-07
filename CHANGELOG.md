@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-10-05
+### Changed
+- Header: the explorer tabs Nodes and Blockexplorer sit on the left next to the logo (replacing the Peer Explorer entry among the section tabs), section tabs, search and network label on the right. The opened search field overlays the tabs instead of wrapping the header into a second row; the network label is the outline pill its stylesheet describes.
+
 ## [0.4.1] - 2026-07-06
 ### Changed
 - Upgraded to Angular 20 (ng-bootstrap 19, TypeScript 5.8, zone.js 0.15) on Node 22 build images; reproducible npm ci builds with committed package-lock.json.
