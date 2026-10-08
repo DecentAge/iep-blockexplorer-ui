@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [0.4.3] - 2026-10-08
+### Changed
+- Maintenance and internal updates.
+
 ## [0.4.2] - 2026-10-05
 ### Changed
 - Header: the explorer tabs Nodes and Blockexplorer sit on the left next to the logo (replacing the Peer Explorer entry among the section tabs), section tabs, search and network label on the right. The opened search field overlays the tabs instead of wrapping the header into a second row; the network label is the outline pill its stylesheet describes.
