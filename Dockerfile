@@ -31,6 +31,7 @@ COPY --from=build /build/iep-blockexplorer-ui.zip /build/iep-blockexplorer-ui.zi
 
 # Copy custom nginx config if needed
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY security-headers.conf /etc/nginx/snippets/security-headers.conf
 
 # Runtime env injection: envsubst fills NETWORK_ENVIRONMENT into env.config.js at container start
 COPY env.config.js.template /etc/nginx/templates/env.config.js.template
