@@ -4,6 +4,7 @@ import { ApiService } from '../../core/services/api.service';
 import { environment } from '../../../environments/environment';
 interface BlockchainStatus {
   numberOfBlocks?: number;
+  version?: string;
 }
 @Component({
   selector: 'app-footer',
@@ -46,7 +47,7 @@ interface BlockchainStatus {
 })
 export class FooterComponent implements OnInit {
   currentHeight: number = 0;
-  connectedURL: string = environment.apiUrl;
+  connectedURL: string = environment.apiUrl || window.location.host;
   version: string = environment.version || '';
   currentDate: string = '';
   constructor(private apiService: ApiService) {}
@@ -68,6 +69,9 @@ export class FooterComponent implements OnInit {
       next: (data) => {
         if (data.numberOfBlocks) {
           this.currentHeight = data.numberOfBlocks;
+        }
+        if (data.version) {
+          this.version = data.version;
         }
       },
       error: (error) => {
