@@ -1,5 +1,5 @@
 # Stage 1: Build the Angular application
-FROM node:22-alpine AS build
+FROM node:22.23.5-alpine3.24 AS build
 WORKDIR /app
 
 # Copy package.json and package-lock.json
@@ -21,7 +21,7 @@ RUN mkdir -p /build \
     && zip -r /build/iep-blockexplorer-ui.zip .
 
 # Stage 2: Serve the application with Nginx
-FROM nginx:alpine AS deploy
+FROM nginx:1.30.7-alpine3.24 AS deploy
 
 # Copy the build output to replace the default nginx contents
 COPY --from=build /app/dist/iep-blockexplorer-ui /usr/share/nginx/html
