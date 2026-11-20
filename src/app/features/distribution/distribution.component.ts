@@ -1,36 +1,58 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { ApiService } from '../../core/services/api.service';
 import { DataTableComponent, TableColumn, PaginationConfig } from '../../shared/components/data-table/data-table.component';
 import { AmountTQTPipe } from '../../shared/pipes/amount-tqt.pipe';
-import { TimestampPipe } from '../../shared/pipes/timestamp.pipe';
+import { ModalService } from '../../shared/services/modal.service';
+import { environment } from '../../../environments/environment';
 
 interface AccountBalance {
-  accountRS?: string;
   account: string;
-  balanceNQT: number;
-  unconfirmedBalanceNQT?: number;
-  effectiveBalanceNXT?: number;
-  forgedBalanceNQT?: number;
+  accountRS?: string;
+  balanceTQT: string;
+  unconfirmedBalanceTQT?: string;
+  effectiveBalance?: number;
+}
+
+interface AccountBalancesResponse {
+  balances?: AccountBalance[];
+  total?: number;
+}
+
+interface DistributionSlice {
+  accountsAmount: number;
 }
 
 interface DistributionRange {
   range: string;
   accounts: number;
   percentage: number;
-  totalBalance: number;
 }
+
+const PAGE_SIZE = 25;
+const MAX_PAGE_INDEX = 100;
+const XIN = environment.tokenQuants;
+
+const RANGES = [
+  { min: 0, max: 1, label: '0 - 1 XIN' },
+  { min: 1, max: 10, label: '1 - 10 XIN' },
+  { min: 10, max: 100, label: '10 - 100 XIN' },
+  { min: 100, max: 1000, label: '100 - 1,000 XIN' },
+  { min: 1000, max: 10000, label: '1,000 - 10,000 XIN' },
+  { min: 10000, max: 100000, label: '10,000 - 100,000 XIN' },
+  { min: 100000, max: 1000000, label: '100,000 - 1,000,000 XIN' },
+  { min: 1000000, max: environment.initialSupply, label: '1,000,000+ XIN' }
+];
 
 @Component({
   selector: 'app-distribution',
   standalone: true,
-  imports: [CommonModule, RouterModule, DataTableComponent, AmountTQTPipe, TimestampPipe],
+  imports: [CommonModule, DataTableComponent, AmountTQTPipe],
   template: `
     <div class="main-content">
       <div class="container-fluid">
         <div class="row">
-          <!-- Top Account Balances Section -->
           <div class="col-lg-6">
             <app-data-table
               [title]="'Top Account Balances'"
@@ -45,7 +67,6 @@ interface DistributionRange {
             </app-data-table>
           </div>
 
-          <!-- Distribution by Balance Range Section -->
           <div class="col-lg-6">
             <app-data-table
               [title]="'Distribution by Balance Range'"
@@ -60,34 +81,28 @@ interface DistributionRange {
           </div>
         </div>
 
-        <!-- Account Templates -->
         <ng-template #rankTemplate let-row let-i="index">
           <strong>{{ getRank(i) }}</strong>
         </ng-template>
 
         <ng-template #accountTemplate let-row>
-          <span class="hash-link">
-            {{ row.accountRS || (row.account | slice:0:10) + '...' + (row.account | slice:-8) }}
-          </span>
+          <a class="hash-link" style="cursor:pointer" (click)="modal.open('account', row.accountRS || row.account)">
+            {{ row.accountRS || row.account }}
+          </a>
         </ng-template>
 
         <ng-template #balanceTemplate let-row>
-          <span class="amount-value">{{ (row.balanceNQT || 0) | amountTQT }} XIN</span>
-        </ng-template>
-
-        <ng-template #unconfirmedTemplate let-row>
-          <span class="amount-value">{{ (row.unconfirmedBalanceNQT || 0) | amountTQT }} XIN</span>
+          <span class="amount-value">{{ row.balanceTQT | amountTQT }} XIN</span>
         </ng-template>
 
         <ng-template #effectiveTemplate let-row>
-          <span class="amount-value">{{ row.effectiveBalanceNXT || 0 }} XIN</span>
+          <span class="amount-value">{{ (row.effectiveBalance || 0) | number }} XIN</span>
         </ng-template>
 
         <ng-template #percentTemplate let-row>
-          <span>{{ calculatePercentage(row.balanceNQT) }}%</span>
+          <span>{{ supplyPercentage(row.balanceTQT) }}%</span>
         </ng-template>
 
-        <!-- Distribution Templates -->
         <ng-template #rangeTemplate let-row>
           <strong>{{ row.range }}</strong>
         </ng-template>
@@ -99,10 +114,6 @@ interface DistributionRange {
         <ng-template #percentAccountsTemplate let-row>
           <span>{{ row.percentage.toFixed(2) }}%</span>
         </ng-template>
-
-        <ng-template #totalBalanceTemplate let-row>
-          <span class="amount-value">{{ (row.totalBalance || 0) | amountTQT }} XIN</span>
-        </ng-template>
       </div>
     </div>
   `,
@@ -113,102 +124,69 @@ interface DistributionRange {
   `]
 })
 export class DistributionComponent implements OnInit {
-  // Account templates
   @ViewChild('rankTemplate', { static: true }) rankTemplate!: TemplateRef<any>;
   @ViewChild('accountTemplate', { static: true }) accountTemplate!: TemplateRef<any>;
   @ViewChild('balanceTemplate', { static: true }) balanceTemplate!: TemplateRef<any>;
-  @ViewChild('unconfirmedTemplate', { static: true }) unconfirmedTemplate!: TemplateRef<any>;
   @ViewChild('effectiveTemplate', { static: true }) effectiveTemplate!: TemplateRef<any>;
   @ViewChild('percentTemplate', { static: true }) percentTemplate!: TemplateRef<any>;
-
-  // Distribution templates
   @ViewChild('rangeTemplate', { static: true }) rangeTemplate!: TemplateRef<any>;
   @ViewChild('accountCountTemplate', { static: true }) accountCountTemplate!: TemplateRef<any>;
   @ViewChild('percentAccountsTemplate', { static: true }) percentAccountsTemplate!: TemplateRef<any>;
-  @ViewChild('totalBalanceTemplate', { static: true }) totalBalanceTemplate!: TemplateRef<any>;
 
-  // Account data
   accounts: AccountBalance[] = [];
   accountColumns: TableColumn[] = [];
-  loadingAccounts: boolean = false;
-  isReloadingAccounts: boolean = false;
-  accountCurrentPage: number = 1;
-  accountPageSize: number = 100;
+  loadingAccounts = false;
+  isReloadingAccounts = false;
+  accountCurrentPage = 1;
   accountPaginationConfig?: PaginationConfig;
 
-  // Distribution data
   distributionRanges: DistributionRange[] = [];
   distributionColumns: TableColumn[] = [];
-  loadingDistribution: boolean = false;
-  isReloadingDistribution: boolean = false;
+  loadingDistribution = false;
+  isReloadingDistribution = false;
 
-  totalSupply: number = 0;
-  totalAccounts: number = 0;
+  totalAccounts = 0;
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, public modal: ModalService) {}
 
   ngOnInit() {
-    this.setupColumns();
-    this.loadTotalSupply();
+    this.accountColumns = [
+      { key: 'rank', label: 'Rank', template: this.rankTemplate },
+      { key: 'accountRS', label: 'Account', template: this.accountTemplate },
+      { key: 'balanceTQT', label: 'Balance', template: this.balanceTemplate },
+      { key: 'effectiveBalance', label: 'Effective Balance', template: this.effectiveTemplate },
+      { key: 'percentage', label: '% of Supply', template: this.percentTemplate }
+    ];
+    this.distributionColumns = [
+      { key: 'range', label: 'Balance Range', template: this.rangeTemplate },
+      { key: 'accounts', label: 'Number of Accounts', template: this.accountCountTemplate },
+      { key: 'percentage', label: '% of Total Accounts', template: this.percentAccountsTemplate }
+    ];
     this.loadAccounts();
     this.loadDistribution();
   }
 
-  setupColumns() {
-    // Setup account columns
-    this.accountColumns = [
-      { key: 'rank', label: 'Rank', template: this.rankTemplate },
-      { key: 'account', label: 'Account', template: this.accountTemplate },
-      { key: 'balanceNQT', label: 'Balance', template: this.balanceTemplate },
-      { key: 'unconfirmedBalanceNQT', label: 'Unconfirmed', template: this.unconfirmedTemplate },
-      { key: 'effectiveBalanceNXT', label: 'Effective Balance', template: this.effectiveTemplate },
-      { key: 'percentage', label: '% of Supply', template: this.percentTemplate }
-    ];
-
-    // Setup distribution columns
-    this.distributionColumns = [
-      { key: 'range', label: 'Balance Range', template: this.rangeTemplate },
-      { key: 'accounts', label: 'Number of Accounts', template: this.accountCountTemplate },
-      { key: 'percentage', label: '% of Total Accounts', template: this.percentAccountsTemplate },
-      { key: 'totalBalance', label: 'Total Balance', template: this.totalBalanceTemplate }
-    ];
-  }
-
-  loadTotalSupply() {
-    this.apiService.get<{ totalSupply: string }>('getBlockchainStatus', {})
-      .subscribe({
-        next: (response) => {
-          this.totalSupply = parseInt(response.totalSupply || '0');
-        },
-        error: (error) => {
-          console.error('Error loading total supply:', error);
-        }
-      });
-  }
-
   loadAccounts() {
-    const wasLoaded = this.accounts.length > 0;
-    if (wasLoaded) {
+    if (this.accounts.length > 0) {
       this.isReloadingAccounts = true;
     } else {
       this.loadingAccounts = true;
     }
-
-    const firstIndex = (this.accountCurrentPage - 1) * this.accountPageSize;
-    const lastIndex = firstIndex + this.accountPageSize - 1;
-
-    this.apiService.get<{ accounts: AccountBalance[] }>('getTopAccounts', {
-      firstIndex: firstIndex,
-      lastIndex: lastIndex
+    this.apiService.get<AccountBalancesResponse>('getAccountBalances', {
+      index: this.accountCurrentPage - 1,
+      size: PAGE_SIZE
     }).subscribe({
       next: (response) => {
-        this.accounts = response.accounts || [];
+        this.accounts = response.balances || [];
+        if (response.total) {
+          this.totalAccounts = response.total;
+        }
         this.loadingAccounts = false;
         this.isReloadingAccounts = false;
         this.updateAccountPagination();
       },
       error: (error) => {
-        console.error('Error loading accounts:', error);
+        console.error('Error loading account balances:', error);
         this.loadingAccounts = false;
         this.isReloadingAccounts = false;
       }
@@ -216,81 +194,66 @@ export class DistributionComponent implements OnInit {
   }
 
   loadDistribution() {
-    const wasLoaded = this.distributionRanges.length > 0;
-    if (wasLoaded) {
+    if (this.distributionRanges.length > 0) {
       this.isReloadingDistribution = true;
     } else {
       this.loadingDistribution = true;
     }
-
-    // Try to get account counts if API supports it, otherwise calculate from accounts
-    this.apiService.get<any>('getAccountCount', {}).subscribe({
-      next: (response) => {
-        this.totalAccounts = parseInt(response.numberOfAccounts || '0');
-        this.calculateDistribution();
+    // getDistributions counts with BETWEEN over at least 3 equal slices, so each range is
+    // requested on [min, min + 3k] with min + 3k just below the next range start.
+    const requests = RANGES.map(r => {
+      const min = r.min * XIN;
+      const span = r.max * XIN - 1 - min;
+      return this.apiService.get<{ distributions?: DistributionSlice[] }>('getDistributions', {
+        minAccountBalance: min,
+        maxAccountBalance: min + span - (span % 3),
+        slices: 3
+      });
+    });
+    forkJoin(requests).subscribe({
+      next: (responses) => {
+        this.distributionRanges = responses.map((res, i) => ({
+          range: RANGES[i].label,
+          accounts: (res.distributions || []).reduce((sum, s) => sum + (s.accountsAmount || 0), 0),
+          percentage: 0
+        }));
+        this.recalculatePercentages();
+        this.loadingDistribution = false;
+        this.isReloadingDistribution = false;
       },
       error: (error) => {
-        console.error('Error loading account count:', error);
-        // Fallback: calculate from known data
-        this.calculateDistribution();
+        console.error('Error loading distribution:', error);
+        this.loadingDistribution = false;
+        this.isReloadingDistribution = false;
       }
     });
   }
 
-  calculateDistribution() {
-    // Create predefined balance ranges
-    const ranges = [
-      { min: 0, max: 1, label: '0 - 1 XIN' },
-      { min: 1, max: 10, label: '1 - 10 XIN' },
-      { min: 10, max: 100, label: '10 - 100 XIN' },
-      { min: 100, max: 1000, label: '100 - 1,000 XIN' },
-      { min: 1000, max: 10000, label: '1,000 - 10,000 XIN' },
-      { min: 10000, max: 100000, label: '10,000 - 100,000 XIN' },
-      { min: 100000, max: 1000000, label: '100,000 - 1,000,000 XIN' },
-      { min: 1000000, max: Infinity, label: '1,000,000+ XIN' }
-    ];
-
-    // This is simplified - in production, you'd need actual API data
-    // For now, create sample distribution data
-    this.distributionRanges = ranges.map((range, index) => ({
-      range: range.label,
-      accounts: Math.floor(Math.random() * 1000) + 10, // Sample data
-      percentage: Math.random() * 20,
-      totalBalance: Math.floor(Math.random() * 1000000) * 100000000
-    }));
-
-    this.loadingDistribution = false;
-    this.isReloadingDistribution = false;
-  }
-
   getRank(index: number): number {
-    return (this.accountCurrentPage - 1) * this.accountPageSize + index + 1;
+    return (this.accountCurrentPage - 1) * PAGE_SIZE + index + 1;
   }
 
-  calculatePercentage(balanceNQT: number): string {
-    if (!this.totalSupply || !balanceNQT) return '0.00';
-    const percentage = (balanceNQT / this.totalSupply) * 100;
-    return percentage.toFixed(4);
-  }
-
-  updateAccountPagination() {
-    this.accountPaginationConfig = {
-      currentPage: this.accountCurrentPage,
-      showPages: this.getAccountPageNumbers()
-    };
-  }
-
-  getAccountPageNumbers(): number[] {
-    const pages = [];
-    for (let i = Math.max(1, this.accountCurrentPage - 2); i <= this.accountCurrentPage + 2; i++) {
-      pages.push(i);
-    }
-    return pages;
+  supplyPercentage(balanceTQT: string): string {
+    const balance = parseFloat(balanceTQT || '0');
+    return ((balance / (environment.initialSupply * XIN)) * 100).toFixed(4);
   }
 
   onAccountPageChange(page: number) {
     if (page < 1) return;
     this.accountCurrentPage = page;
     this.loadAccounts();
+  }
+
+  private recalculatePercentages() {
+    const total = this.distributionRanges.reduce((sum, r) => sum + r.accounts, 0);
+    if (!total) return;
+    this.distributionRanges = this.distributionRanges.map(r => ({ ...r, percentage: (r.accounts / total) * 100 }));
+  }
+
+  private updateAccountPagination() {
+    const totalPages = this.totalAccounts
+      ? Math.min(MAX_PAGE_INDEX + 1, Math.ceil(this.totalAccounts / PAGE_SIZE))
+      : undefined;
+    this.accountPaginationConfig = { currentPage: this.accountCurrentPage, totalPages };
   }
 }

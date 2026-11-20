@@ -146,7 +146,8 @@ export class VotingComponent implements OnInit {
 
     this.apiService.get<{ polls: Poll[] }>('getAllPolls', {
       firstIndex: firstIndex,
-      lastIndex: lastIndex
+      lastIndex: lastIndex,
+      includeFinished: true
     }).subscribe({
       next: (response) => {
         this.polls = response.polls || [];

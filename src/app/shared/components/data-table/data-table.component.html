@@ -33,11 +33,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let row of data">
+            <tr *ngFor="let row of data; let i = index">
               <td *ngFor="let column of columns">
                 <!-- If custom template is provided -->
                 <ng-container *ngIf="column.template; else defaultCell">
-                  <ng-container *ngTemplateOutlet="column.template; context: { $implicit: row, row: row }"></ng-container>
+                  <ng-container *ngTemplateOutlet="column.template; context: { $implicit: row, row: row, index: i }"></ng-container>
                 </ng-container>
                 <!-- Default cell rendering -->
                 <ng-template #defaultCell>
