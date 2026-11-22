@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [0.4.5] - 2026-11-22
+### Added
+- Added a Content-Security-Policy and a statistics counting script.
+
+### Fixed
+- Corrected distribution and statistics data to reflect real values, included finished polls, and fixed deep links.
+
 ## [0.4.4] - 2026-10-12
 ### Changed
 - Maintenance and internal updates.
